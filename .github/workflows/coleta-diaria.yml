@@ -1,0 +1,181 @@
+name: Coleta diaria Caixa
+
+on:
+  schedule:
+    - cron: "15 6 * * *"
+  workflow_dispatch:
+    inputs:
+      uf:
+        description: "UF para coleta manual ou ALL para todas"
+        required: true
+        default: "ALL"
+        type: string
+
+concurrency:
+  group: coleta-diaria-caixa
+  cancel-in-progress: false
+
+jobs:
+  migrar:
+    uses: ./.github/workflows/migrate-db.yml
+    secrets:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  coletar:
+    needs: migrar
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      snapshot_changed: ${{ steps.snapshot_commit.outputs.changed }}
+    permissions:
+      contents: write
+      issues: write
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.NEXT_PUBLIC_SITE_URL || 'https://garimpo-imoveis.pages.dev' }}
+      DEFAULT_UFS: AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO
+      REQUESTED_UF: ${{ inputs.uf || 'ALL' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # Logs públicos: esconde host, endpoint e usuário do banco em qualquer
+      # saída posterior (o GitHub já mascara a URL completa do secret).
+      - name: Mask database connection details
+        shell: bash
+        run: |
+          node -e 'const u = new URL(process.env.DATABASE_URL); for (const v of [u.hostname, u.hostname.split(".")[0], u.username]) if (v) console.log("::add-mask::" + v);'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run daily collection
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          requested_uf="${REQUESTED_UF^^}"
+
+          if [[ "$requested_uf" == "ALL" ]]; then
+            ufs="$DEFAULT_UFS"
+          else
+            ufs="$requested_uf"
+          fi
+
+          echo "# Resumo da coleta" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Disparo: ${GITHUB_EVENT_NAME}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- UFs: $ufs" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| UF | Resultado |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| --- | --- |" >> "$GITHUB_STEP_SUMMARY"
+
+          failures=0
+
+          for uf in $ufs; do
+            echo "Iniciando coleta da UF $uf"
+
+            if output=$(npx tsx scripts/coleta/run-coleta.ts "$uf" 2>&1); then
+              echo "$output"
+              compact_output=$(printf '%s' "$output" | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g')
+              echo "| $uf | $compact_output |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              failures=$((failures + 1))
+              echo "$output"
+              compact_output=$(printf '%s' "$output" | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g')
+              echo "| $uf | FALHA: $compact_output |" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+
+          if [[ "$failures" -gt 0 ]]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Falhas detectadas: $failures" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Create issue on failure
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title = `Falha na coleta diaria da Caixa - ${new Date().toISOString().slice(0, 10)}`;
+            const body = [
+              'O workflow de coleta diaria encontrou uma falha.',
+              '',
+              `- Execucao: ${context.runId}`,
+              `- URL da execucao: ${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${context.runId}`,
+              `- Disparo: ${context.eventName}`,
+              `- UF solicitada: ${process.env.REQUESTED_UF}`,
+              '',
+              'Consulte o resumo da execucao no GitHub Actions para identificar a UF e a saida exata.',
+            ].join('\n');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+            });
+
+      - name: Generate public snapshot
+        if: success()
+        run: npm run public:snapshot
+
+      - name: Commit updated snapshot
+        if: success()
+        id: snapshot_commit
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/public-snapshot.json
+
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Snapshot sem alteracoes."
+            exit 0
+          fi
+
+          git commit -m "chore: atualizar snapshot publico"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Summarize publish status
+        if: success()
+        shell: bash
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "## Publicacao do site" >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "${{ steps.snapshot_commit.outputs.changed }}" == "true" ]]; then
+            echo "- Snapshot publico atualizado e commitado." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- Snapshot publico sem alteracoes; nenhum commit novo." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          if [[ "${{ steps.snapshot_commit.outputs.changed }}" == "true" ]]; then
+            echo "- Deploy na Cloudflare Pages sera executado pelo job publicar." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- Deploy nao necessario (snapshot sem mudancas)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # Commits feitos com GITHUB_TOKEN nao disparam outros workflows,
+  # entao o deploy e chamado explicitamente apos atualizar o snapshot.
+  publicar:
+    needs: coletar
+    if: needs.coletar.outputs.snapshot_changed == 'true'
+    uses: ./.github/workflows/deploy-pages.yml
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

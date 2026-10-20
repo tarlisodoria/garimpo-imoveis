@@ -1,0 +1,1 @@
+ALTER TABLE "perfis" ADD COLUMN "assinatura_ate" timestamp with time zone;

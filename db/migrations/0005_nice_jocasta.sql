@@ -1,0 +1,1 @@
+ALTER TABLE "filtros" ADD COLUMN "criado_em" timestamp with time zone DEFAULT now() NOT NULL;

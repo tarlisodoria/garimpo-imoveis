@@ -1,0 +1,11 @@
+node_modules
+.next
+out
+coverage
+package-lock.json
+# Arquivos gerados por ferramenta ou script (drizzle-kit, snapshot, IBGE)
+db/migrations/meta
+data
+
+# Gerado por npm run analise
+docs/resultados.md

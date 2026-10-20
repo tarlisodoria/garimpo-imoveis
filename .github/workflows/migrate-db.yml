@@ -1,0 +1,44 @@
+name: Aplicar migrations do banco
+
+on:
+  # Manual: aplicar uma migration sem esperar a coleta diária.
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      DATABASE_URL:
+        required: true
+
+concurrency:
+  group: migrate-neon-database
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      # Logs públicos: esconde host, endpoint e usuário do banco em qualquer
+      # saída posterior (o GitHub já mascara a URL completa do secret).
+      - name: Mask database connection details
+        shell: bash
+        run: |
+          node -e 'const u = new URL(process.env.DATABASE_URL); for (const v of [u.hostname, u.hostname.split(".")[0], u.username]) if (v) console.log("::add-mask::" + v);'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply database migrations
+        run: npm run db:migrate

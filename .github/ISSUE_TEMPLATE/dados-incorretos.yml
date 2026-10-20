@@ -1,0 +1,27 @@
+name: Dado incorreto ou desatualizado
+description: Um imóvel aparece com valor, modalidade ou cidade diferente da página oficial da Caixa.
+labels: ["dados"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Os dados vêm da lista oficial da Caixa, que pode ficar alguns dias atrás da página de cada imóvel. Não inclua dados pessoais: as issues são públicas.
+  - type: input
+    id: imovel
+    attributes:
+      label: Número do imóvel (N° do imóvel na Caixa)
+      placeholder: "1444416960696"
+    validations:
+      required: true
+  - type: input
+    id: pagina
+    attributes:
+      label: Página do Garimpo Imóveis onde apareceu
+      placeholder: "https://garimpo-imoveis.pages.dev/rj/sao-goncalo"
+  - type: textarea
+    id: diferenca
+    attributes:
+      label: O que está diferente
+      description: Compare com a página oficial do imóvel (valor mínimo, avaliação, modalidade, cidade).
+    validations:
+      required: true

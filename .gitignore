@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.dev.vars*
+.wrangler/
+node_modules/
+.next/
+*.tsbuildinfo
+out/
+coverage/
+.tmp/
+.vscode/
+next-env.d.ts

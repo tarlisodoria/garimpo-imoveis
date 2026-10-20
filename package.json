@@ -1,0 +1,60 @@
+{
+  "name": "garimpo-imoveis",
+  "version": "1.0.0",
+  "description": "Pipeline diário da lista de imóveis à venda da Caixa e site estático com descontos por estado e cidade.",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --max-warnings=0",
+    "test": "node --import tsx --test scripts/coleta/*.test.ts scripts/lib/*.test.ts lib/*.test.ts",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
+    "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:check": "tsx scripts/check-db.ts",
+    "db:introspect": "tsx scripts/check-drizzle.ts",
+    "db:counts": "tsx scripts/db-counts.ts",
+    "public:snapshot": "tsx scripts/public/generate-public-snapshot.ts",
+    "public:municipios": "tsx scripts/public/gerar-municipios-ibge.ts",
+    "analise": "tsx scripts/analise/gerar-resultados.ts",
+    "collect:pa": "tsx scripts/coleta/run-coleta.ts PA"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tarlisodoria/garimpo-imoveis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/tarlisodoria/garimpo-imoveis/issues"
+  },
+  "homepage": "https://github.com/tarlisodoria/garimpo-imoveis#readme",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0",
+    "dotenv": "^18.0.8",
+    "drizzle-orm": "^0.45.4",
+    "next": "^16.4.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^26.6.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.6.1",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.2",
+    "postcss": "^8.5.30",
+    "prettier": "^3.9.10",
+    "prettier-plugin-tailwindcss": "^0.8.1",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  }
+}

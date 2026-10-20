@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "Se usar este projeto, cite-o com os metadados abaixo."
+title: "Garimpo Imóveis: pipeline diário da lista de imóveis à venda da Caixa"
+abstract: >-
+  Pipeline de dados que coleta diariamente a lista pública de imóveis à venda
+  da Caixa Econômica Federal nas 27 UFs, detecta imóveis novos e quedas de
+  preço e publica um site estático com descontos por estado e cidade.
+authors:
+  - family-names: "Dória"
+    given-names: "Tarliso"
+type: software
+license: MIT
+version: "1.0.0"
+date-released: "2026-10-20"
+repository-code: "https://github.com/tarlisodoria/garimpo-imoveis"
+url: "https://garimpo-imoveis.pages.dev"
+keywords:
+  - web scraping
+  - data pipeline
+  - real estate
+  - open data
+  - Next.js
+  - PostgreSQL
+  - GitHub Actions
