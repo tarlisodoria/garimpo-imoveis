@@ -1,5 +1,7 @@
 # Garimpo Imóveis
 
+![Garimpo Imóveis home page: monitoring totals and the week's largest price drops](docs/img/home.png)
+
 [![CI](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml)
 [![Daily collection](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -35,15 +37,15 @@ Details (in Portuguese) in [docs/arquitetura.md](docs/arquitetura.md) and [docs/
 
 ## Stack and rationale
 
-| Layer         | Technology                              | Why                                                        |
-| ------------- | --------------------------------------- | ---------------------------------------------------------- |
-| Orchestration | GitHub Actions                          | free scheduling, logs and secrets, next to the code        |
-| Database      | Neon (serverless Postgres, São Paulo)   | managed Postgres that does not pause on the free tier      |
-| Data access   | Drizzle ORM + drizzle-kit               | end-to-end types and versioned SQL migrations              |
-| Language      | TypeScript (Node 20, `tsx`)             | the same code runs locally and in CI                       |
-| Website       | Next.js (`output: "export"`) + Tailwind | static pages per state and city, SEO-friendly              |
-| Hosting       | Cloudflare Pages (Direct Upload)        | free CDN, no server, no credentials at the edge            |
-| Quality       | `node:test`, ESLint, Prettier           | tests with no extra dependencies; formatting checked in CI |
+| Layer         | Technology                              | Why                                                                                   |
+| ------------- | --------------------------------------- | ------------------------------------------------------------------------------------- |
+| Orchestration | GitHub Actions                          | free scheduling, logs and secrets, next to the code                                   |
+| Database      | Neon (serverless Postgres, São Paulo)   | does not pause the project for inactivity (unlike Supabase); it only suspends compute |
+| Data access   | Drizzle ORM + drizzle-kit               | end-to-end types and versioned SQL migrations                                         |
+| Language      | TypeScript (Node 20, `tsx`)             | the same code runs locally and in CI                                                  |
+| Website       | Next.js (`output: "export"`) + Tailwind | static pages per state and city, SEO-friendly                                         |
+| Hosting       | Cloudflare Pages (Direct Upload)        | free CDN, no server, no credentials at the edge                                       |
+| Quality       | `node:test`, ESLint, Prettier           | tests with no extra dependencies; formatting checked in CI                            |
 
 Running cost: **zero** (free tiers only).
 
@@ -61,7 +63,7 @@ Technical decisions are recorded as ADRs (in Portuguese) in [docs/adr/](docs/adr
 1. **A whole state went missing from the database.** Rio de Janeiro (8,053 rows) blew Drizzle's call stack in a single insert, after the collector had already marked the run as `success`. The next day the same file was treated as "unchanged", leaving the state with zero properties. Fix: batches of 500, `success` written only after persisting, every failure recorded, and the bad record corrected without deleting data. Rio was re-imported with 8,053 properties.
 2. **Over 20,000 fake "new listings".** The first collection of a state creates a `new` event for its entire base: 13,711 in the first nationwide run and 8,053 for Rio. A per-state cutoff, with no schema change, separates the initial load from real new listings.
 3. **HTTP 502 from the source.** Caixa sometimes answers 502. The failure is recorded, does not block the next attempt and opens an issue automatically; the file is reprocessed the next day.
-4. **Suspicious 90% discounts.** 34 properties had discounts of exactly 90.00% or 90.01%. It is not rounding: the minimum sale price is 10% of the appraisal, for properties that went through auctions with no buyer. Highlights are now limited to 2 properties per city.
+4. **Suspicious 90% discounts.** On the analysis date (Oct 20, 2026), 34 properties had discounts of exactly 90.00% or 90.01%. It is not rounding: the minimum sale price is 10% of the appraisal, for properties that went through auctions with no buyer. Highlights are now limited to 2 properties per city.
 5. **List lagging behind the official page.** For some properties the sale type in the CSV differed from the official page; the CSV served on Oct 20 had been generated on Oct 16. Each card now shows the date of the list the data came from.
 6. **Dates one day early.** `2026-10-16` formatted in the Brasília time zone became Oct 15. Date-only values are now formatted without a time zone, with a test.
 7. **Formatting failing on Windows.** 75 of 76 `format:check` failures were CRLF line endings. A `.gitattributes` with `eol=lf` fixed it, and the check now runs in CI.
@@ -114,10 +116,16 @@ npm run analise                          # regenerate docs/resultados.md
 - History starts in October 2026, when monitoring began.
 - 12 of 1,187 cities have no match in IBGE data (Federal District administrative regions, districts and spelling differences) and are shown without accents.
 
+## Next steps
+
+- Retry the CSV download on 5xx errors and timeouts, with exponential backoff and a circuit breaker so the workflow stays within its time limit.
+- Integration tests against a Postgres instance in CI, covering collection, diff and persistence end to end.
+- A public channel for the day's price drops (for example, an RSS feed generated at build time).
+
 ## License and data
 
 The code is released under the [MIT License](LICENSE). Property data is public information published by Caixa Econômica Federal, and municipality names come from IBGE; they are not relicensed under MIT (see [docs/dados.md](docs/dados.md)). To cite this project, use [CITATION.cff](CITATION.cff).
 
 ## Author
 
-Tarliso Dória · [github.com/tarlisodoria](https://github.com/tarlisodoria)
+Tarliso Dória · [github.com/tarlisodoria](https://github.com/tarlisodoria) · [LinkedIn](https://www.linkedin.com/in/tarlisodoria)

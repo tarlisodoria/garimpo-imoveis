@@ -1,5 +1,7 @@
 # Garimpo Imóveis
 
+![Home do Garimpo Imóveis: números do monitoramento e maiores quedas de preço da semana](docs/img/home.png)
+
 [![CI](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml)
 [![Coleta diária](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml)
 [![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-green.svg)](LICENSE)
@@ -35,15 +37,15 @@ Detalhes em [docs/arquitetura.md](docs/arquitetura.md) e [docs/dados.md](docs/da
 
 ## Stack e motivos
 
-| Camada         | Tecnologia                              | Por quê                                                         |
-| -------------- | --------------------------------------- | --------------------------------------------------------------- |
-| Orquestração   | GitHub Actions                          | agendamento, logs e secrets gratuitos, no mesmo lugar do código |
-| Banco          | Neon (Postgres serverless, São Paulo)   | Postgres gerenciado sem pausa por inatividade no plano gratuito |
-| Acesso a dados | Drizzle ORM + drizzle-kit               | tipagem de ponta a ponta e migrations SQL versionadas           |
-| Linguagem      | TypeScript (Node 20, `tsx`)             | o mesmo código roda localmente e no CI                          |
-| Site           | Next.js (`output: "export"`) + Tailwind | páginas estáticas por UF e cidade, boas para SEO                |
-| Hospedagem     | Cloudflare Pages (Direct Upload)        | CDN gratuita, sem servidor e sem credenciais na borda           |
-| Qualidade      | `node:test`, ESLint, Prettier           | testes sem dependências extras; formatação checada no CI        |
+| Camada         | Tecnologia                              | Por quê                                                                                  |
+| -------------- | --------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Orquestração   | GitHub Actions                          | agendamento, logs e secrets gratuitos, no mesmo lugar do código                          |
+| Banco          | Neon (Postgres serverless, São Paulo)   | não pausa o projeto por inatividade (diferente do Supabase); só suspende o processamento |
+| Acesso a dados | Drizzle ORM + drizzle-kit               | tipagem de ponta a ponta e migrations SQL versionadas                                    |
+| Linguagem      | TypeScript (Node 20, `tsx`)             | o mesmo código roda localmente e no CI                                                   |
+| Site           | Next.js (`output: "export"`) + Tailwind | páginas estáticas por UF e cidade, boas para SEO                                         |
+| Hospedagem     | Cloudflare Pages (Direct Upload)        | CDN gratuita, sem servidor e sem credenciais na borda                                    |
+| Qualidade      | `node:test`, ESLint, Prettier           | testes sem dependências extras; formatação checada no CI                                 |
 
 Custo de operação: **zero** (todos os serviços em planos gratuitos).
 
@@ -61,7 +63,7 @@ As decisões técnicas estão registradas como ADRs em [docs/adr/](docs/adr/). A
 1. **Uma UF inteira ficou fora do banco.** O RJ (8.053 linhas) estourou a pilha do Drizzle num insert único, e o coletor já tinha marcado a coleta como `sucesso`. No dia seguinte, o mesmo arquivo foi tratado como "sem alteração" e o RJ ficou com zero imóveis. Correção: lotes de 500, `sucesso` gravado só depois de persistir, toda falha registrada e o registro errado corrigido sem apagar dados. O RJ foi reimportado com 8.053 imóveis ([ADR 0004](docs/adr/0004-persistencia-em-lotes.md)).
 2. **Mais de 20 mil "imóveis novos" falsos.** A primeira coleta de cada UF gera um evento `novo` para a base inteira: 13.711 na coleta nacional e 8.053 no RJ. Um corte por UF, sem mudar o schema, separa a carga inicial das novidades reais ([ADR 0003](docs/adr/0003-corte-da-carga-inicial.md)).
 3. **Erro 502 da fonte.** A Caixa às vezes responde HTTP 502. A falha fica registrada, não bloqueia a próxima tentativa e abre uma issue automática; o arquivo é reprocessado no dia seguinte.
-4. **Descontos de 90% suspeitos.** 34 imóveis tinham desconto de exatamente 90,00% ou 90,01%. A investigação mostrou que não é arredondamento: o valor mínimo de venda é 10% da avaliação, em imóveis que passaram por leilões sem comprador. Os destaques passaram a limitar 2 imóveis por cidade ([ADR 0007](docs/adr/0007-destaques-por-cidade-e-nomes-do-ibge.md)).
+4. **Descontos de 90% suspeitos.** Na data da análise (20/10/2026), 34 imóveis tinham desconto de exatamente 90,00% ou 90,01%. A investigação mostrou que não é arredondamento: o valor mínimo de venda é 10% da avaliação, em imóveis que passaram por leilões sem comprador. Os destaques passaram a limitar 2 imóveis por cidade ([ADR 0007](docs/adr/0007-destaques-por-cidade-e-nomes-do-ibge.md)).
 5. **Lista atrasada em relação à página oficial.** Para alguns imóveis, a modalidade do CSV diferia da página oficial. O CSV servido em 20/10 ainda era o gerado em 16/10. Cada card agora mostra a data da lista de onde vieram os dados.
 6. **Datas um dia antes.** `2026-10-16` formatado com fuso de Brasília virava 15/10. Datas sem horário passaram a ser formatadas sem fuso, com teste.
 7. **Formatação quebrando no Windows.** 75 de 76 falhas do `format:check` eram fim de linha CRLF. Um `.gitattributes` com `eol=lf` resolveu, e o check passou a rodar no CI.
@@ -114,10 +116,16 @@ npm run analise                        # regenera docs/resultados.md
 - O histórico começa em outubro de 2026, quando o monitoramento começou.
 - 12 de 1.187 cidades não têm correspondência no IBGE (regiões administrativas do DF, distritos e grafias diferentes) e aparecem sem acento.
 
+## Próximos passos
+
+- Nova tentativa no download do CSV em erros 5xx e timeout, com espera exponencial e um disjuntor para não estourar o tempo do workflow.
+- Testes de integração com um Postgres no CI, cobrindo coleta, diff e persistência de ponta a ponta.
+- Canal público com as quedas de preço do dia (por exemplo, um feed RSS gerado no build).
+
 ## Licença e dados
 
 O código está sob a [licença MIT](LICENSE). Os dados de imóveis são públicos, divulgados pela Caixa Econômica Federal, e os nomes de município vêm do IBGE; eles não são relicenciados pela MIT (veja [docs/dados.md](docs/dados.md)). Para citar o projeto, use [CITATION.cff](CITATION.cff).
 
 ## Autor
 
-Tarliso Dória · [github.com/tarlisodoria](https://github.com/tarlisodoria)
+Tarliso Dória · [github.com/tarlisodoria](https://github.com/tarlisodoria) · [LinkedIn](https://www.linkedin.com/in/tarlisodoria)
