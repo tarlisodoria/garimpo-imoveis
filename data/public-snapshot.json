@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-10-24T06:39:50.248Z",
+  "generatedAt": "2026-10-25T06:40:09.666Z",
   "summary": {
     "totalImoveis": 22890,
     "totalUfs": 27,
     "totalCidades": 1234,
-    "novos7d": 3208,
-    "quedas7d": 6729
+    "novos7d": 3198,
+    "quedas7d": 6723
   },
   "topDescontos": [
     {
@@ -75125,7 +75125,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8444431006068",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             },
             {
               "idCaixa": "8444439600520",
@@ -75287,7 +75287,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8555537296568",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             },
             {
               "idCaixa": "8555537411634",
@@ -75546,7 +75546,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8444431589780",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             },
             {
               "idCaixa": "8555515857117",
@@ -75564,7 +75564,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8555515857117",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             },
             {
               "idCaixa": "8787701342114",
@@ -75582,7 +75582,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8787701342114",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             },
             {
               "idCaixa": "8787717056442",
@@ -76280,7 +76280,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8787701262404",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             },
             {
               "idCaixa": "8787708544847",
@@ -78246,7 +78246,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8444420158970",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             }
           ]
         },
@@ -78325,7 +78325,7 @@
               "linkOficial": "https://venda-imoveis.caixa.gov.br/sistema/detalhe-imovel.asp?hdnimovel=8787701502014",
               "economiaReais": "0.00",
               "entrouEm": "2026-10-17T13:56:30.944Z",
-              "selo": "novo"
+              "selo": null
             }
           ]
         },
