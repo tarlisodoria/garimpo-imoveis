@@ -30,7 +30,7 @@
 | Modalidade de venda          | `modalidade`                         | ex.: Venda Direta Online, Venda Online, Leilão SFI  |
 | Link de acesso               | `link_oficial`                       | página oficial do imóvel                            |
 
-A "Data de geração" vai para `imoveis_historico.data` e é exibida como "Modalidade informada na lista da Caixa de dd/mm". A lista pode ficar alguns dias atrás da página oficial, que é atualizada em tempo real.
+A "Data de geração" vai para `imoveis_historico.data` e é exibida nos cartões como "Lista Caixa · dd/mm", para indicar a data-base dos dados apresentados. O texto não é repetido como aviso em todos os cartões; o link para a página oficial continua disponível para conferência. A lista pode ficar alguns dias atrás da página oficial, que é atualizada em tempo real.
 
 ## Tabelas (Postgres, Drizzle)
 

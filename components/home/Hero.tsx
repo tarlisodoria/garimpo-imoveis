@@ -1,7 +1,6 @@
 type HeroProps = {
   atualizadoEm: string | null;
   totalUfs: number;
-  totalImoveis: number;
 };
 
 function dataHora(iso: string | null): string | null {
@@ -18,7 +17,7 @@ function dataHora(iso: string | null): string | null {
   }).format(data);
 }
 
-export function Hero({ atualizadoEm, totalUfs, totalImoveis }: HeroProps) {
+export function Hero({ atualizadoEm, totalUfs }: HeroProps) {
   const atualizacao = dataHora(atualizadoEm);
 
   return (
@@ -76,12 +75,6 @@ export function Hero({ atualizadoEm, totalUfs, totalImoveis }: HeroProps) {
             <p className="mt-2 text-xs text-white/70">
               Imagem ilustrativa · foto do imóvel na página oficial
             </p>
-          </div>
-          <div className="shrink-0 rounded-2xl border border-white/30 bg-white/15 px-4 py-3 backdrop-blur-md">
-            <span className="block text-2xl font-semibold">
-              {new Intl.NumberFormat("pt-BR").format(totalImoveis)}
-            </span>
-            <span className="text-xs text-white/75">imóveis monitorados</span>
           </div>
         </div>
       </div>

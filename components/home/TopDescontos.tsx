@@ -31,7 +31,7 @@ export function TopDescontos({
           filtro ou escolha uma região diferente.
         </p>
       ) : (
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {filtrados.map((imovel) => (
             <CardImovel key={imovel.idCaixa} imovel={imovel} />
           ))}

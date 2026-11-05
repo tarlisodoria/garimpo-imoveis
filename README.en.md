@@ -1,6 +1,8 @@
 # Garimpo Imóveis
 
-![Garimpo Imóveis interactive map with property type filters](docs/img/home.png)
+![Property search with a fixed filter sidebar, map and featured results](docs/img/home.png)
+
+![Property card with clear price, savings, sale type, address and dates](docs/img/card-imovel.png)
 
 ![Budget filter with quick price ranges, histogram and adjustable slider](docs/img/orcamento.png)
 
@@ -20,12 +22,14 @@ Caixa publishes its list of properties for sale as one CSV file per state, with 
 
 ## What I built
 
-I redesigned the showcase to make exploring opportunities more visual and straightforward:
+I redesigned the showcase to make exploring opportunities more visual, straightforward and easier to use:
 
-- **Interactive map of Brazil:** select a region or state, then browse the cities covered in each state.
+- **Side-by-side search:** on larger screens, the map and filters stay in a fixed sidebar while results scroll; on phones, a panel opens the map and filters without pushing the listings down.
+- **Interactive map of Brazil:** select a region or state, browse its cities and update results by location.
 - **Color-coded property types:** filter houses, apartments, land, warehouses, commercial properties and other types. Markers are grouped by state because the public list does not provide exact address coordinates.
 - **Budget filter:** quick price ranges, a histogram of displayed listings, a progressive-scale minimum/maximum slider and editable numeric fields.
 - **Light and dark themes:** a header switch saves the preference in the browser.
+- **Clearer listing cards:** sale price, appraisal and savings are emphasized; sale type, financing, address and dates use concise rows and small icons.
 - **Official photos:** when Caixa makes an image available, it loads directly from the source. This project does not copy or host property photos.
 - **State and city pages:** contextual navigation to continue exploring and review listed opportunities.
 
@@ -42,9 +46,9 @@ npm test
 npm run build
 ```
 
-All 46 automated tests passed and the Next.js static build generated 1,249 HTML pages. I also checked the interactions in a browser: property type and budget filters, map marker updates, city navigation and dark-theme persistence. The browser console showed no hydration errors.
+All 46 automated tests passed and the Next.js static build generated 1,262 HTML pages. I also checked the interface on desktop and mobile: sticky sidebar, accessible filter panel open and close, state selection, filtered results, card readability and complete addresses. Map interactions and theme selection were checked as well.
 
-The screenshots above were captured from the validated local build. Passing tests does not replace checking each property's terms on Caixa's official page.
+The screenshots above were captured from the validated local build before pushing to GitHub and publishing to Cloudflare Pages. Passing tests does not replace checking each property's terms on Caixa's official page.
 
 ## How it works
 
@@ -55,7 +59,7 @@ flowchart LR
     diff -->|"batches of 500"| neon[("Neon<br/>Postgres")]
     neon --> snapshot["Versioned<br/>JSON snapshot"]
     snapshot --> build["Next.js<br/>static export"]
-    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1,250 pages"]
+    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1,260 pages"]
 ```
 
 1. **Collection:** a scheduled workflow downloads each state's CSV (one request per state per day). Files identical to the last processed one (same SHA-256) are skipped.
@@ -113,9 +117,9 @@ A reproducible analysis lives in [docs/resultados.md](docs/resultados.md), gener
 | Monitored properties  | ~22,000 in 27 states                   |
 | Full daily collection | ~5 min                                 |
 | Build and deploy      | ~2 min                                 |
-| Static pages          | 1,249 HTML (Pages limit: 20,000 files) |
+| Static pages          | 1,262 HTML (Pages limit: 20,000 files) |
 | Tests                 | 46, in 11 files                        |
-| Code                  | ~5,200 lines of TypeScript             |
+| Code                  | ~5,300 lines of TypeScript             |
 | Monthly cost          | BRL 0                                  |
 
 ## Running locally

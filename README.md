@@ -1,6 +1,8 @@
 # Garimpo Imóveis
 
-![Mapa interativo do Garimpo Imóveis com filtros de tipos de imóvel](docs/img/home.png)
+![Busca de imóveis com filtros fixos à esquerda, mapa e resultados em destaque](docs/img/home.png)
+
+![Card de imóvel com preço, economia, modalidade, endereço e datas organizados](docs/img/card-imovel.png)
 
 ![Filtro de orçamento com faixas rápidas, histograma de preços e régua ajustável](docs/img/orcamento.png)
 
@@ -20,12 +22,14 @@ A Caixa publica a lista de imóveis à venda como um CSV por estado, sem histór
 
 ## O que construí
 
-Redesenhei a vitrine para tornar a busca por oportunidades mais visual e direta:
+Redesenhei a vitrine para tornar a busca por oportunidades mais visual, direta e fácil de usar:
 
-- **Mapa interativo do Brasil:** seleção de região e estado, com acesso às cidades atendidas em cada UF.
+- **Busca lado a lado:** em telas grandes, mapa e filtros ficam numa barra lateral fixa enquanto os resultados rolam; em celulares, um painel abre mapa e filtros sem empurrar a lista para baixo.
+- **Mapa interativo do Brasil:** seleção de região e estado, com acesso às cidades atendidas em cada UF e resultados atualizados pelo local selecionado.
 - **Tipos de imóvel por cor:** filtros para casas, apartamentos, terrenos, galpões, imóveis comerciais e outros. Os marcadores são agrupados por estado porque a lista pública não fornece coordenadas exatas dos endereços.
 - **Filtro de orçamento:** atalhos de faixa de preço, histograma dos anúncios exibidos, régua de mínimo e máximo em escala progressiva e campos numéricos editáveis.
 - **Tema claro e escuro:** alternância no cabeçalho, com preferência salva no navegador.
+- **Cards mais legíveis:** preço de venda, avaliação e economia em destaque; modalidade, financiamento, endereço e datas em linhas curtas, com ícones para apoiar a leitura.
 - **Fotos oficiais:** quando a Caixa disponibiliza uma imagem, ela é carregada diretamente da fonte. O projeto não copia nem hospeda as fotografias.
 - **Páginas de estado e cidade:** navegação contextual para continuar a busca e conferir as oportunidades publicadas.
 
@@ -42,9 +46,9 @@ npm test
 npm run build
 ```
 
-Os 46 testes automatizados passaram e o build estático do Next.js gerou 1.249 páginas HTML. Também conferi a interação no navegador: filtros de tipo e orçamento, atualização dos marcadores, navegação para cidades e persistência do tema escuro. O console ficou sem erros de hidratação.
+Os 46 testes automatizados passaram e o build estático do Next.js gerou 1.262 páginas HTML. Também conferi a interação no navegador, em desktop e celular: painel fixo, abertura e fechamento acessível dos filtros, seleção de estado, resultados filtrados, leitura dos cards e ausência de cortes no endereço. A seleção de tema e as interações do mapa também foram verificadas.
 
-As capturas acima foram feitas na versão local validada. A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
+As capturas acima foram feitas na versão local validada, antes do envio ao GitHub e da publicação no Cloudflare Pages. A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
 
 ## Como funciona
 
@@ -55,7 +59,7 @@ flowchart LR
     diff -->|"lotes de 500"| neon[("Neon<br/>Postgres")]
     neon --> snapshot["Snapshot JSON<br/>versionado"]
     snapshot --> build["Next.js<br/>export estático"]
-    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1.250 páginas"]
+    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1.260 páginas"]
 ```
 
 1. **Coleta:** um workflow agendado baixa o CSV de cada UF (uma requisição por UF por dia). Arquivos iguais ao último processado (mesmo SHA-256) são ignorados.
@@ -113,9 +117,9 @@ Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `
 | Imóveis monitorados    | ~22 mil, 27 UFs                               |
 | Coleta diária completa | ~5 min                                        |
 | Build e deploy         | ~2 min                                        |
-| Páginas estáticas      | 1.249 HTML (limite do Pages: 20.000 arquivos) |
+| Páginas estáticas      | 1.262 HTML (limite do Pages: 20.000 arquivos) |
 | Testes                 | 46, em 11 arquivos                            |
-| Código                 | ~5,2 mil linhas de TypeScript                 |
+| Código                 | ~5,3 mil linhas de TypeScript                 |
 | Custo mensal           | R$ 0                                          |
 
 ## Como rodar

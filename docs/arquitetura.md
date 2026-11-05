@@ -53,7 +53,9 @@ flowchart LR
 
 - Next.js com `output: "export"`: home, páginas por UF e por cidade (`generateStaticParams`), status, termos e privacidade.
 - A busca exploratória recebe um recorte leve dos imóveis em destaque e os totais por UF/cidade, não o catálogo completo. O mapa SVG usa a malha estadual do IBGE; região e estado são selecionáveis e cada UF abre suas cidades.
+- Em telas grandes, mapa e filtros ficam numa barra lateral sticky com rolagem própria; os resultados permanecem no fluxo principal. Em telas pequenas, um botão persistente abre o painel como diálogo modal, com foco controlado, fechamento por Escape e bloqueio da rolagem de fundo.
 - Os filtros de tipo e de preço trabalham em conjunto sobre os imóveis em destaque. Os pontos coloridos indicam a presença de um tipo na UF, não coordenadas dos anúncios. A régua de orçamento usa escala logarítmica, histograma e limites numéricos; filtros e mapa são atualizados no navegador.
+- Os cartões priorizam preço de venda, avaliação e diferença em reais. Modalidade e financiamento ficam como etiquetas; endereço e datas da lista/monitoramento aparecem separados, sem repetir em cada cartão o aviso sobre conferir as condições oficiais. O link direto para a Caixa continua visível.
 - O botão de tema no cabeçalho salva a escolha claro/escuro em `localStorage`. O mapa mantém seu painel escuro e as linhas em destaque nos dois temas.
 - Os cartões tentam carregar fotos do domínio oficial da Caixa diretamente, sem copiar as imagens para o repositório, e exibem alternativa quando a origem não disponibiliza a fotografia.
 - Deploy por `wrangler pages deploy` (Direct Upload) no Cloudflare Pages, depois de `format:check` e build.
@@ -64,7 +66,7 @@ O snapshot limita quantos imóveis detalhados são enviados à home; as contagen
 
 #### Verificação local do redesign
 
-Antes da publicação desta versão, a interface foi verificada em máquina local com `npm run lint`, `npm run format:check`, `npm test` (46 testes em 11 arquivos), `npm run build` (1.249 páginas HTML) e `git diff --check`. Também foram exercitados no navegador os filtros de tipo e orçamento, os marcadores, a seleção de estado/cidade, a persistência do tema e a hidratação do HTML estático.
+Antes da publicação desta versão, a interface foi verificada em máquina local com `npm run lint`, `npm run format:check`, `npm test` (46 testes em 11 arquivos), `npm run build` (1.262 páginas HTML) e `git diff --check`. Também foram exercitados no navegador, em desktop e celular, o painel de filtros, a seleção de estado e atualização dos cartões, os marcadores, a leitura dos endereços e a ausência de overflow horizontal. As capturas do README foram registradas a partir dessa versão local antes do push e do deploy.
 
 ## Segurança
 
