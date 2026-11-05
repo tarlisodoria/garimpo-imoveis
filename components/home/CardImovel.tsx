@@ -3,12 +3,13 @@ import Link from "next/link";
 
 import { formatarLocal } from "../../lib/formatar-local";
 import {
-  toCurrencyCompacto,
+  toCurrency,
   toDataCurta,
   toDiaMes,
   toPercent,
 } from "../../lib/formatar";
 import type { PublicImovel } from "../../lib/public-data";
+import { IconeLinha } from "../site/IconeLinha";
 import { FotoImovel } from "./FotoImovel";
 
 export type CardImovelDados = Pick<
@@ -63,6 +64,7 @@ export function CardImovel({
       : `${imovel.cidadeNome}/${imovel.uf}`;
   const economia = Number(imovel.economiaReais);
   const monitoradoDesde = toDataCurta(imovel.entrouEm);
+  const dataLista = toDiaMes(imovel.listaDe);
   const selo = imovel.selo ? SELOS[imovel.selo] : null;
 
   return (
@@ -73,7 +75,7 @@ export function CardImovel({
           descricao={`Foto oficial do imóvel em ${local}`}
         />
         <p className="absolute right-4 bottom-4 rounded-xl bg-[#173b50] px-3 py-2 text-center text-white shadow-lg">
-          <span className="block text-xl leading-none font-bold">
+          <span className="block text-xl leading-tight font-bold">
             {toPercent(imovel.descontoPct)}
           </span>
           <span className="mt-1 block text-[0.62rem] tracking-wide uppercase">
@@ -90,63 +92,79 @@ export function CardImovel({
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <p className="text-xs font-semibold tracking-wide text-[#54717e] uppercase">
-          {local}
-        </p>
-        <h3 className="mt-1 text-lg font-semibold text-[#173b50]">
+        <div className="flex items-start gap-2 text-sm font-medium text-[#54717e]">
+          <IconeLinha nome="local" className="mt-0.5 h-4 w-4 shrink-0" />
+          <p className="min-w-0 break-words">{local}</p>
+        </div>
+        <h3 className="mt-2 text-lg leading-snug font-semibold text-[#173b50]">
           {imovel.tipo || "Imóvel"}
         </h3>
 
         {destaque}
 
-        <dl className="mt-5 grid grid-cols-2 gap-3 border-y border-[#173b50]/10 py-4">
-          <div>
-            <dt className="text-xs text-slate-500">Valor de venda</dt>
-            <dd className="mt-1 text-base font-semibold text-[#173b50]">
-              {toCurrencyCompacto(imovel.preco)}
-            </dd>
+        <div className="mt-4 rounded-xl bg-[#f3f7f6] p-4">
+          <div className="flex items-center gap-2 text-xs font-medium text-slate-500">
+            <IconeLinha nome="preco" className="h-4 w-4 text-[#28749a]" />
+            Valor de venda
           </div>
-          <div>
-            <dt className="text-xs text-slate-500">Avaliação</dt>
-            <dd className="mt-1 text-base font-medium text-slate-700">
-              {toCurrencyCompacto(imovel.valorAvaliacao)}
-            </dd>
-          </div>
-        </dl>
-
-        {economia > 0 ? (
-          <p className="mt-3 text-sm text-[#315769]">
-            <strong className="font-semibold">
-              {toCurrencyCompacto(economia)}
-            </strong>{" "}
-            abaixo da avaliação
+          <p className="mt-1 text-2xl leading-tight font-bold tracking-tight text-[#173b50]">
+            {toCurrency(imovel.preco)}
           </p>
-        ) : null}
+          <div className="mt-3 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-t border-[#173b50]/10 pt-3">
+            <span className="text-xs text-slate-500">Avaliação</span>
+            <span className="text-sm font-medium text-slate-700">
+              {toCurrency(imovel.valorAvaliacao)}
+            </span>
+          </div>
+          {economia > 0 ? (
+            <p className="economia-imovel mt-2 flex items-center gap-2 text-sm font-semibold text-[#12675e]">
+              <IconeLinha nome="queda" className="h-4 w-4 shrink-0" />
+              {toCurrency(economia)} abaixo da avaliação
+            </p>
+          ) : null}
+        </div>
 
-        <ul className="mt-4 flex flex-wrap gap-2 text-xs text-slate-600">
-          <li className="rounded-full bg-[#f0f4f3] px-2.5 py-1">
+        <ul className="mt-4 flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+          <li className="inline-flex items-center gap-1.5 rounded-full bg-[#f0f4f3] px-2.5 py-1.5">
+            <IconeLinha nome="casa" className="h-3.5 w-3.5" />
             {imovel.modalidade}
           </li>
-          <li className="rounded-full bg-[#f0f4f3] px-2.5 py-1">
+          <li className="inline-flex items-center gap-1.5 rounded-full bg-[#f0f4f3] px-2.5 py-1.5">
+            <IconeLinha nome="financiamento" className="h-3.5 w-3.5 shrink-0" />
             {imovel.aceitaFinanciamento
               ? "Aceita financiamento"
               : "Sem financiamento"}
           </li>
         </ul>
-        <p className="mt-2 text-xs leading-5 text-slate-500">
-          Modalidade informada na lista da Caixa
-          {imovel.listaDe ? ` de ${toDiaMes(imovel.listaDe)}` : ""}. Confirme as
-          condições na página oficial.
-        </p>
 
-        <p className="mt-3 line-clamp-2 text-xs leading-5 text-slate-600">
-          {imovel.endereco}
-        </p>
-        {monitoradoDesde ? (
-          <p className="mt-1 text-xs text-slate-500">
-            Monitorado desde {monitoradoDesde}
+        <div className="mt-4 space-y-2 border-t border-[#173b50]/10 pt-3">
+          <p
+            title={imovel.endereco}
+            className="flex items-start gap-2 text-sm leading-5 text-slate-600"
+          >
+            <IconeLinha
+              nome="local"
+              className="mt-0.5 h-4 w-4 shrink-0 text-slate-400"
+            />
+            <span className="min-w-0 break-words">{imovel.endereco}</span>
           </p>
-        ) : null}
+          {dataLista || monitoradoDesde ? (
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+              {dataLista ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <IconeLinha nome="calendario" className="h-3.5 w-3.5" />
+                  Lista Caixa · {dataLista}
+                </span>
+              ) : null}
+              {monitoradoDesde ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <IconeLinha nome="relogio" className="h-3.5 w-3.5" />
+                  Monitorado desde {monitoradoDesde}
+                </span>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
 
         <div className="mt-auto flex items-center justify-between gap-3 pt-5 text-sm font-semibold">
           {contexto === "geral" ? (
@@ -165,9 +183,10 @@ export function CardImovel({
             href={imovel.linkOficial}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#28749a] underline-offset-4 hover:underline"
+            className="inline-flex items-center gap-1 text-[#28749a] underline-offset-4 hover:underline"
           >
-            Ver na Caixa ↗
+            Ver na Caixa
+            <span aria-hidden="true">↗</span>
           </a>
         </div>
       </div>

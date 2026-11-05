@@ -110,7 +110,7 @@ export function FiltroPreco({
   return (
     <section
       aria-labelledby="filtro-preco-titulo"
-      className="filtro-preco-painel mt-10 rounded-[1.75rem] border p-5 shadow-[0_18px_48px_rgba(23,59,80,0.07)] sm:p-7"
+      className="filtro-preco-painel mt-4 rounded-[1.5rem] border p-4 shadow-[0_18px_48px_rgba(23,59,80,0.07)] sm:p-5"
     >
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
         <div>

@@ -96,7 +96,6 @@ export default function Home() {
       <Hero
         atualizadoEm={snapshot.generatedAt}
         totalUfs={snapshot.summary.totalUfs}
-        totalImoveis={snapshot.summary.totalImoveis}
       />
       <Numeros summary={snapshot.summary} />
       <ExplorarImoveis imoveis={imoveis} ufs={ufs} />

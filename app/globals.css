@@ -34,6 +34,8 @@ html[data-theme="escuro"] [class~="bg-white/95"] {
 }
 
 html[data-theme="escuro"] [class~="bg-[#f7f8f6]/90"],
+html[data-theme="escuro"] [class~="bg-[#f7f8f6]/95"],
+html[data-theme="escuro"] [class~="bg-[#f7f8f6]"],
 html[data-theme="escuro"] [class~="bg-[#f0f5f4]"],
 html[data-theme="escuro"] [class~="bg-[#f3f8f8]"],
 html[data-theme="escuro"] [class~="bg-[#f6f8f7]"],
@@ -114,6 +116,15 @@ html[data-theme="escuro"] select {
     #fff;
 }
 
+.resultados-contagem {
+  border: 1px solid rgb(18 103 94 / 12%);
+}
+
+.barra-filtros {
+  scrollbar-color: rgb(18 103 94 / 38%) transparent;
+  scrollbar-width: thin;
+}
+
 .preco-range-input {
   appearance: none;
   pointer-events: none;
@@ -188,6 +199,16 @@ html[data-theme="escuro"] .filtro-preco-painel [class~="bg-[#e8f7f4]"] {
 
 html[data-theme="escuro"] .filtro-preco-painel [class~="bg-[#dce8e7]"] {
   background-color: #30434a;
+}
+
+html[data-theme="escuro"] .resultados-contagem {
+  border-color: rgb(72 203 181 / 24%);
+  background-color: #163d3b;
+  color: #a8eee1;
+}
+
+html[data-theme="escuro"] .economia-imovel {
+  color: #83ddc8;
 }
 
 html[data-theme="escuro"] .filtro-preco-campo {
