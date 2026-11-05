@@ -1,6 +1,8 @@
 # Garimpo Imóveis
 
-![Garimpo Imóveis home page: monitoring totals and the week's largest price drops](docs/img/home.png)
+![Garimpo Imóveis interactive map with property type filters](docs/img/home.png)
+
+![Budget filter with quick price ranges, histogram and adjustable slider](docs/img/orcamento.png)
 
 [![CI](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml)
 [![Daily collection](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml)
@@ -16,6 +18,34 @@ A data pipeline that collects, every day, the official list of properties for sa
 
 Caixa publishes its list of properties for sale as one CSV file per state, with no history, no day-to-day comparison and no way to search by discount. Finding out what was added or got cheaper means downloading and comparing files by hand. This project automates that comparison and turns the result into browsable pages.
 
+## What I built
+
+I redesigned the showcase to make exploring opportunities more visual and straightforward:
+
+- **Interactive map of Brazil:** select a region or state, then browse the cities covered in each state.
+- **Color-coded property types:** filter houses, apartments, land, warehouses, commercial properties and other types. Markers are grouped by state because the public list does not provide exact address coordinates.
+- **Budget filter:** quick price ranges, a histogram of displayed listings, a progressive-scale minimum/maximum slider and editable numeric fields.
+- **Light and dark themes:** a header switch saves the preference in the browser.
+- **Official photos:** when Caixa makes an image available, it loads directly from the source. This project does not copy or host property photos.
+- **State and city pages:** contextual navigation to continue exploring and review listed opportunities.
+
+Search counts and cards use the featured listings included in the public snapshot, not the entire active Caixa catalog. Price, availability, auction notice, occupancy and terms can change; confirm them on each property's official page.
+
+## Validation before publishing
+
+Before publishing this version, I ran the tests on my local machine:
+
+```bash
+npm run lint
+npm run format:check
+npm test
+npm run build
+```
+
+All 46 automated tests passed and the Next.js static build generated 1,249 HTML pages. I also checked the interactions in a browser: property type and budget filters, map marker updates, city navigation and dark-theme persistence. The browser console showed no hydration errors.
+
+The screenshots above were captured from the validated local build. Passing tests does not replace checking each property's terms on Caixa's official page.
+
 ## How it works
 
 ```mermaid
@@ -25,7 +55,7 @@ flowchart LR
     diff -->|"batches of 500"| neon[("Neon<br/>Postgres")]
     neon --> snapshot["Versioned<br/>JSON snapshot"]
     snapshot --> build["Next.js<br/>static export"]
-    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1,200 pages"]
+    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1,250 pages"]
 ```
 
 1. **Collection:** a scheduled workflow downloads each state's CSV (one request per state per day). Files identical to the last processed one (same SHA-256) are skipped.
@@ -78,15 +108,15 @@ A reproducible analysis lives in [docs/resultados.md](docs/resultados.md), gener
 
 ## Metrics
 
-| Metric                | Value                                    |
-| --------------------- | ---------------------------------------- |
-| Monitored properties  | ~22,000 in 27 states                     |
-| Full daily collection | ~5 min                                   |
-| Build and deploy      | ~2 min                                   |
-| Static pages          | 1,213 (6,087 files; Pages limit: 20,000) |
-| Tests                 | 43, in 10 files                          |
-| Code                  | ~3,400 lines of TypeScript               |
-| Monthly cost          | BRL 0                                    |
+| Metric                | Value                                  |
+| --------------------- | -------------------------------------- |
+| Monitored properties  | ~22,000 in 27 states                   |
+| Full daily collection | ~5 min                                 |
+| Build and deploy      | ~2 min                                 |
+| Static pages          | 1,249 HTML (Pages limit: 20,000 files) |
+| Tests                 | 46, in 11 files                        |
+| Code                  | ~5,200 lines of TypeScript             |
+| Monthly cost          | BRL 0                                  |
 
 ## Running locally
 
@@ -125,6 +155,8 @@ npm run analise                          # regenerate docs/resultados.md
 ## License and data
 
 The code is released under the [MIT License](LICENSE). Property data is public information published by Caixa Econômica Federal, and municipality names come from IBGE; they are not relicensed under MIT (see [docs/dados.md](docs/dados.md)). To cite this project, use [CITATION.cff](CITATION.cff).
+
+The interactive map uses IBGE state boundaries distributed by [br-geojson](https://github.com/henriquemalvar/br-geojson) under CC0 1.0. Colored dots group featured listings by property type and state; they indicate approximate presence, not the exact address. The budget slider filters the showcase by price range with a progressive scale and quick presets. The header switch toggles between light and dark themes and saves the preference in the browser. When available, property card photos load directly from Caixa's official domain; image files are not copied into this project.
 
 ## Author
 

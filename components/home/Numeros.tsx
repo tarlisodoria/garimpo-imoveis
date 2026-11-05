@@ -21,15 +21,18 @@ export function Numeros({ summary }: NumerosProps) {
   }
 
   return (
-    <section aria-label="Números do monitoramento" className="mt-12">
+    <section
+      aria-label="Números do monitoramento"
+      className="mt-4 scroll-mt-24 sm:mt-6"
+    >
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {itens.map((item) => (
           <div
             key={item.rotulo}
-            className="flex flex-col rounded-2xl border border-slate-900/10 bg-white/80 p-5"
+            className="flex flex-col rounded-2xl border border-[#173b50]/10 bg-white p-5 shadow-sm"
           >
-            <dt className="text-sm text-slate-600">{item.rotulo}</dt>
-            <dd className="order-first text-3xl font-semibold text-slate-950 sm:text-4xl">
+            <dt className="text-xs text-slate-500">{item.rotulo}</dt>
+            <dd className="order-first text-3xl font-semibold tracking-tight text-[#173b50] sm:text-4xl">
               {toNumero(item.valor)}
             </dd>
           </div>

@@ -3,7 +3,9 @@
 ## Origem e licença
 
 - **Imóveis:** lista pública de imóveis à venda da Caixa Econômica Federal, um CSV por UF em `https://venda-imoveis.caixa.gov.br/listaweb/Lista_imoveis_<UF>.csv`, baixado uma vez por dia por UF. São dados divulgados publicamente pela Caixa; a licença MIT deste repositório cobre o **código**, não esses dados, cuja reutilização deve respeitar as condições da fonte. O projeto não armazena fotos e sempre aponta para a página oficial de cada imóvel.
+- **Fotos dos imóveis:** quando disponíveis, são solicitadas diretamente ao domínio oficial da Caixa para exibição no cartão; não são copiadas para o snapshot ou para o repositório. A disponibilidade depende da fonte e o site apresenta uma alternativa quando a imagem falha.
 - **Municípios:** nomes oficiais da [API de localidades do IBGE](https://servicodados.ibge.gov.br/api/docs/localidades), usados só para exibir os nomes com acentos (fonte: IBGE).
+- **Mapa:** geometria das UFs derivada da malha do IBGE distribuída pelo [br-geojson](https://github.com/henriquemalvar/br-geojson), sob CC0 1.0. O mapa não contém coordenadas de anúncios.
 - **Dados pessoais:** nenhum. O site não tem cadastro, e a lista da Caixa descreve imóveis, não pessoas.
 
 ## Formato do CSV da Caixa
@@ -73,3 +75,11 @@ Uma linha por tentativa de coleta de UF. Colunas: `uf`, `iniciado_em`, `status` 
 | `ufs[].cidades[]` | `nome`, `slug`, `totalImoveis` e `topDescontos` (até 80 imóveis)                                             |
 
 Cada imóvel no snapshot traz os campos da tabela `imoveis` usados no site, mais `economiaReais` (avaliação − valor mínimo), `entrouEm` e `selo` (`novo`, `baixou` ou `null`). Snapshots antigos sem os campos novos continuam válidos: a leitura (`lib/public-data.ts`) preenche valores padrão.
+
+## Busca na home e interpretação das contagens
+
+A home monta um recorte de destaques com os maiores descontos globais e até seis imóveis por UF. Os controles de tipo e faixa de preço, o histograma e os cartões filtram somente esse recorte. Assim, a contagem mostrada ao selecionar um orçamento significa “imóveis em destaque nesta faixa”, não o número total de anúncios disponíveis na Caixa. Já os totais agregados de imóveis e cidades vêm dos campos completos do snapshot.
+
+O tipo informado pela Caixa é agrupado para a legenda do mapa em casas (inclui sobrado), apartamentos, terrenos, galpões, comerciais (inclui prédio, loja e sala) e outros. Os pontos são posicionados de forma ilustrativa dentro da UF e não identificam cidade, bairro ou endereço. A lista pública não fornece coordenadas geográficas por anúncio para posicionamento preciso.
+
+O filtro de orçamento permite valores mínimo e máximo; as faixas sugeridas são atalhos. A régua usa uma escala logarítmica progressiva para manter faixas mais baixas ajustáveis mesmo quando há valores máximos muito maiores. O preço filtrado é o valor mínimo de venda fornecido pela Caixa, sujeito às regras da modalidade e à confirmação do edital.

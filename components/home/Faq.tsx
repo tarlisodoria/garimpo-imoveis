@@ -26,23 +26,25 @@ export function Faq() {
     <section aria-labelledby="faq" className="mt-20">
       <h2
         id="faq"
-        className="text-3xl font-semibold tracking-tight text-slate-950"
+        className="text-3xl font-semibold tracking-tight text-[#173b50] sm:text-4xl"
       >
         Perguntas frequentes
       </h2>
-      <div className="mt-6 divide-y divide-slate-900/10 rounded-2xl border border-slate-900/10 bg-white/80">
+      <div className="mt-6 divide-y divide-[#173b50]/10 rounded-2xl border border-[#173b50]/10 bg-white">
         {PERGUNTAS.map((item) => (
-          <details key={item.pergunta} className="group p-5">
+          <details key={item.pergunta} className="group p-5 sm:p-6">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-slate-900">
               {item.pergunta}
               <span
                 aria-hidden="true"
-                className="text-xl text-emerald-800 transition-transform group-open:rotate-45"
+                className="text-xl text-[#28749a] transition-transform group-open:rotate-45"
               >
                 +
               </span>
             </summary>
-            <p className="mt-3 leading-7 text-slate-700">{item.resposta}</p>
+            <p className="mt-3 max-w-4xl leading-7 text-slate-600">
+              {item.resposta}
+            </p>
           </details>
         ))}
       </div>

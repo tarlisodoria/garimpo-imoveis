@@ -10,37 +10,47 @@ const LINKS = [
 
 export function Rodape() {
   return (
-    <footer className="mx-auto mt-20 max-w-6xl border-t border-slate-900/10 px-4 py-10 text-sm leading-6 text-slate-600 sm:px-6">
-      <nav aria-label="Links institucionais">
-        <ul className="flex flex-wrap gap-x-6 gap-y-2">
-          {LINKS.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className="font-medium text-slate-800 underline-offset-4 hover:underline"
+    <footer className="mt-20 bg-[#173b50] text-white">
+      <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:grid-cols-[1fr_auto] md:items-end lg:px-8">
+        <div className="max-w-2xl">
+          <Link
+            href="/"
+            className="text-lg font-semibold tracking-tight text-white"
+          >
+            Garimpo Imóveis
+          </Link>
+          <p className="mt-3 text-sm leading-6 text-white/70">
+            Projeto independente, sem fins comerciais e sem vínculo com a Caixa
+            Econômica Federal. As informações são organizadas a partir da lista
+            pública de imóveis; confirme preço, edital e condições no site
+            oficial antes de qualquer decisão.
+          </p>
+        </div>
+        <nav aria-label="Links institucionais">
+          <ul className="flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            {LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className="font-medium text-white/80 underline-offset-4 hover:text-white hover:underline"
+                >
+                  {link.texto}
+                </Link>
+              </li>
+            ))}
+            <li>
+              <a
+                href={repositorioUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-white/80 underline-offset-4 hover:text-white hover:underline"
               >
-                {link.texto}
-              </Link>
+                Código-fonte ↗
+              </a>
             </li>
-          ))}
-          <li>
-            <a
-              href={repositorioUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-slate-800 underline-offset-4 hover:underline"
-            >
-              Código-fonte ↗
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <p className="mt-4 max-w-3xl">
-        Projeto de portfólio, sem fins comerciais. Não é afiliado à Caixa
-        Econômica Federal e não a representa. Os dados vêm da lista pública de
-        imóveis à venda da Caixa; confirme sempre as condições no site oficial
-        antes de qualquer decisão.
-      </p>
+          </ul>
+        </nav>
+      </div>
     </footer>
   );
 }

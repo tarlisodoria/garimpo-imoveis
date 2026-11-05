@@ -72,8 +72,8 @@ export default async function CidadePage({ params }: CidadePageProps) {
   const nomeEstado = nomeUf(currentUf.uf);
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-      <nav className="text-sm text-slate-600" aria-label="Navegação">
+    <main className="mx-auto max-w-7xl px-4 py-8 pb-20 sm:px-6 lg:px-8">
+      <nav className="text-sm text-slate-500" aria-label="Navegação">
         <Link href="/" className="underline-offset-4 hover:underline">
           Início
         </Link>{" "}
@@ -84,14 +84,18 @@ export default async function CidadePage({ params }: CidadePageProps) {
         >
           {nomeEstado}
         </Link>{" "}
-        / {nomeCidade}
+        <span aria-hidden="true">/</span>{" "}
+        <span className="font-medium text-[#173b50]">{nomeCidade}</span>
       </nav>
 
-      <header className="mt-6">
-        <h1 className="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+      <header className="mt-7 rounded-[1.75rem] bg-[#173b50] px-6 py-8 text-white sm:px-10 sm:py-12">
+        <p className="text-xs font-semibold tracking-[0.18em] text-[#c8ec67] uppercase">
+          Oportunidades por cidade
+        </p>
+        <h1 className="mt-3 text-3xl leading-tight font-semibold tracking-tight sm:text-5xl">
           Imóveis da Caixa em {nomeCidade}/{currentUf.uf}
         </h1>
-        <p className="mt-4 text-lg leading-8 text-slate-700">
+        <p className="mt-4 max-w-2xl leading-7 text-white/75">
           {toNumero(currentCidade.totalImoveis)}{" "}
           {currentCidade.totalImoveis === 1
             ? "imóvel à venda"
@@ -103,7 +107,7 @@ export default async function CidadePage({ params }: CidadePageProps) {
       <section aria-labelledby="descontos-cidade" className="mt-12">
         <h2
           id="descontos-cidade"
-          className="text-2xl font-semibold tracking-tight text-slate-950"
+          className="text-2xl font-semibold tracking-tight text-[#173b50]"
         >
           Imóveis por desconto
         </h2>

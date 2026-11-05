@@ -2,12 +2,200 @@
 
 :root {
   color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
   min-height: 100vh;
+  background: #f7f8f6;
+  color: #293943;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #c8ec67;
+  color: #173b50;
+}
+
+html[data-theme="escuro"] {
+  color-scheme: dark;
+}
+
+html[data-theme="escuro"] body {
+  background: #091419;
+  color: #e4efee;
+}
+
+html[data-theme="escuro"] [class~="bg-white"],
+html[data-theme="escuro"] [class~="bg-white/82"],
+html[data-theme="escuro"] [class~="bg-white/85"],
+html[data-theme="escuro"] [class~="bg-white/95"] {
+  background-color: #12232a;
+}
+
+html[data-theme="escuro"] [class~="bg-[#f7f8f6]/90"],
+html[data-theme="escuro"] [class~="bg-[#f0f5f4]"],
+html[data-theme="escuro"] [class~="bg-[#f3f8f8]"],
+html[data-theme="escuro"] [class~="bg-[#f6f8f7]"],
+html[data-theme="escuro"] [class~="bg-[#f8faf9]"],
+html[data-theme="escuro"] [class~="bg-[#f3f7f6]"],
+html[data-theme="escuro"] [class~="bg-[#eaf2f2]"],
+html[data-theme="escuro"] [class~="bg-[#f0f4f3]"],
+html[data-theme="escuro"] [class~="bg-[#dbe5e7]"],
+html[data-theme="escuro"] [class~="bg-[#e6edf0]"],
+html[data-theme="escuro"] [class~="bg-slate-50/80"],
+html[data-theme="escuro"] [class~="bg-emerald-50"],
+html[data-theme="escuro"] [class~="bg-amber-50"],
+html[data-theme="escuro"] [class~="bg-sky-50"] {
+  background-color: #172a31;
+}
+
+html[data-theme="escuro"] [class*="bg-[linear-gradient"] {
+  background-image: linear-gradient(145deg, #1a3038, #14262d);
+}
+
+html[data-theme="escuro"] [class~="bg-[#173b50]"],
+html[data-theme="escuro"] [class~="bg-[#24526b]"] {
+  background-color: #0c5961;
+}
+
+html[data-theme="escuro"] [class~="text-[#173b50]"],
+html[data-theme="escuro"] [class~="text-[#315769]"],
+html[data-theme="escuro"] [class~="text-[#54717e]"],
+html[data-theme="escuro"] [class~="text-slate-950"],
+html[data-theme="escuro"] [class~="text-slate-900"],
+html[data-theme="escuro"] [class~="text-slate-700"],
+html[data-theme="escuro"] [class~="text-slate-600"] {
+  color: #d7e8e6;
+}
+
+html[data-theme="escuro"] [class~="text-slate-500"],
+html[data-theme="escuro"] [class~="text-slate-400"] {
+  color: #9ab0b3;
+}
+
+html[data-theme="escuro"] [class~="text-emerald-800"],
+html[data-theme="escuro"] [class~="text-emerald-950"],
+html[data-theme="escuro"] [class~="text-amber-800"],
+html[data-theme="escuro"] [class~="text-amber-950"],
+html[data-theme="escuro"] [class~="text-sky-800"] {
+  color: #b6e2d2;
+}
+
+html[data-theme="escuro"] [class~="text-[#28749a]"] {
+  color: #65c8de;
+}
+
+html[data-theme="escuro"] [class~="border-[#173b50]/10"],
+html[data-theme="escuro"] [class~="border-[#173b50]/15"],
+html[data-theme="escuro"] [class~="border-slate-900/5"],
+html[data-theme="escuro"] [class~="border-slate-900/6"],
+html[data-theme="escuro"] [class~="border-slate-900/10"],
+html[data-theme="escuro"] [class~="border-emerald-900/10"],
+html[data-theme="escuro"] [class~="border-emerald-950/10"] {
+  border-color: rgb(163 205 208 / 16%);
+}
+
+html[data-theme="escuro"] input,
+html[data-theme="escuro"] select {
+  color-scheme: dark;
+}
+
+.mapa-painel {
   background:
-    radial-gradient(circle at top, rgba(9, 94, 76, 0.14), transparent 35%),
-    linear-gradient(180deg, #f7f5ef 0%, #f3efe4 100%);
-  color: #1f2937;
+    radial-gradient(ellipse at 50% 45%, rgb(12 63 72 / 28%), transparent 58%),
+    #07151b;
+}
+
+.filtro-preco-painel {
+  border-color: rgb(23 59 80 / 10%);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgb(72 203 181 / 9%), transparent 42%),
+    #fff;
+}
+
+.preco-range-input {
+  appearance: none;
+  pointer-events: none;
+  background: transparent;
+  opacity: 1;
+}
+
+.preco-range-input::-webkit-slider-runnable-track {
+  height: 6px;
+  background: transparent;
+}
+
+.preco-range-input::-moz-range-track {
+  height: 6px;
+  background: transparent;
+}
+
+.preco-range-input::-webkit-slider-thumb {
+  width: 20px;
+  height: 20px;
+  margin-top: -7px;
+  appearance: none;
+  pointer-events: auto;
+  cursor: grab;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #12675e;
+  box-shadow:
+    0 0 0 2px #35bda9,
+    0 2px 8px rgb(7 21 27 / 22%);
+}
+
+.preco-range-input::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  pointer-events: auto;
+  cursor: grab;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #12675e;
+  box-shadow:
+    0 0 0 2px #35bda9,
+    0 2px 8px rgb(7 21 27 / 22%);
+}
+
+.preco-range-input:focus-visible {
+  outline: none;
+}
+
+.preco-range-input:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px rgb(53 189 169 / 24%),
+    0 0 0 2px #35bda9;
+}
+
+.preco-range-input:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 4px rgb(53 189 169 / 24%),
+    0 0 0 2px #35bda9;
+}
+
+html[data-theme="escuro"] .filtro-preco-painel {
+  border-color: rgb(163 205 208 / 16%);
+  background:
+    radial-gradient(ellipse at 100% 0%, rgb(72 203 181 / 11%), transparent 42%),
+    #12232a;
+}
+
+html[data-theme="escuro"] .filtro-preco-painel [class~="bg-[#e8f7f4]"] {
+  background-color: #163d3b;
+}
+
+html[data-theme="escuro"] .filtro-preco-painel [class~="bg-[#dce8e7]"] {
+  background-color: #30434a;
+}
+
+html[data-theme="escuro"] .filtro-preco-campo {
+  border-color: rgb(163 205 208 / 18%);
+  background-color: #0c1b21;
+  color: #e4efee;
+}
+
+html[data-theme="escuro"] .filtro-preco-trilho {
+  background-color: #30434a;
 }

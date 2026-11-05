@@ -1,65 +1,53 @@
-import { repositorioUrl } from "../../lib/site";
-
 const ETAPAS = [
   {
-    titulo: "Coleta",
+    titulo: "Encontre uma oportunidade",
     texto:
-      "Às 03:15, um workflow do GitHub Actions baixa o CSV oficial de cada estado. O arquivo vem em Windows-1252 e só é processado se o hash mudou.",
+      "Explore os imóveis por região, estado e cidade, ou comece pelos maiores descontos e pelas quedas de preço recentes.",
   },
   {
-    titulo: "Comparação",
+    titulo: "Compare os valores",
     texto:
-      "Cada lista é comparada com a anterior. Imóveis novos, quedas de preço, mudanças de modalidade e saídas viram eventos no Postgres (Neon), gravados em lotes.",
+      "Veja o valor mínimo de venda, a avaliação e as condições de pagamento informadas na lista oficial.",
   },
   {
-    titulo: "Snapshot",
+    titulo: "Confira na fonte oficial",
     texto:
-      "Um script gera um JSON com os números, os destaques e as quedas da semana, ignorando a carga inicial de cada estado para não inflar os “novos”.",
-  },
-  {
-    titulo: "Publicação",
-    texto:
-      "O Next.js gera mais de mil páginas estáticas, por estado e cidade, publicadas no Cloudflare Pages. O site não acessa o banco.",
+      "Abra a página do imóvel na Caixa para confirmar preço, edital, ocupação e todas as regras antes de tomar uma decisão.",
   },
 ];
 
 export function ComoFunciona() {
   return (
-    <section aria-labelledby="como-funciona" className="mt-20">
+    <section
+      aria-labelledby="como-funciona"
+      className="mt-20 scroll-mt-24 sm:mt-28"
+    >
       <h2
         id="como-funciona"
-        className="text-3xl font-semibold tracking-tight text-slate-950"
+        className="text-3xl font-semibold tracking-tight text-[#173b50] sm:text-4xl"
       >
-        Como funciona o pipeline
+        Como funciona
       </h2>
-      <ol className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <p className="mt-3 max-w-2xl leading-7 text-slate-600">
+        Uma forma mais clara de acompanhar os imóveis anunciados pela Caixa e
+        chegar à informação completa na página oficial.
+      </p>
+      <ol className="mt-6 grid gap-4 md:grid-cols-3">
         {ETAPAS.map((etapa, indice) => (
           <li
             key={etapa.titulo}
-            className="rounded-2xl border border-slate-900/10 bg-white/80 p-6"
+            className="rounded-2xl border border-[#173b50]/10 bg-white p-6 shadow-sm"
           >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-800 text-sm font-bold text-white">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#173b50] text-sm font-bold text-white">
               {indice + 1}
             </span>
-            <h3 className="mt-4 text-lg font-semibold text-slate-900">
+            <h3 className="mt-4 text-lg font-semibold text-[#173b50]">
               {etapa.titulo}
             </h3>
-            <p className="mt-2 leading-7 text-slate-700">{etapa.texto}</p>
+            <p className="mt-2 leading-7 text-slate-600">{etapa.texto}</p>
           </li>
         ))}
       </ol>
-      <p className="mt-4 text-sm text-slate-600">
-        Detalhes, decisões de arquitetura e problemas resolvidos estão no{" "}
-        <a
-          href={repositorioUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-emerald-800 underline underline-offset-4"
-        >
-          repositório
-        </a>
-        .
-      </p>
     </section>
   );
 }
