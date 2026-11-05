@@ -7,6 +7,8 @@ import { and, desc, eq, gte, inArray, max } from "drizzle-orm";
 
 import { db } from "../../db/client";
 import { coletas, eventos, imoveis, imoveisHistorico } from "../../db/schema";
+import { lerCaracteristicasImovel } from "../../lib/caracteristicas-imovel";
+import { lerDataEncerramentoCaixa, prazoFuturo } from "../../lib/cronometro";
 import { slugify } from "../../lib/slug";
 import {
   calcularEconomia,
@@ -36,6 +38,8 @@ type PublicImovel = {
   economiaReais: string;
   entrouEm: string;
   selo: SeloImovel;
+  caracteristicas: ReturnType<typeof lerCaracteristicasImovel>;
+  encerramentoEm: string | null;
 };
 
 type PublicCidade = {
@@ -75,6 +79,104 @@ const TOP_GLOBAL = 30;
 const TOP_QUEDAS = 12;
 const TOP_UF = 50;
 const TOP_CIDADE = 80;
+const MAX_PRAZOS_CONSULTADOS = 120;
+const CONCORRENCIA_PRAZOS = 2;
+
+async function enriquecerPrazos(snapshot: PublicSnapshot) {
+  const referenciasPorId = new Map<string, PublicImovel[]>();
+  const adicionar = (imoveis: PublicImovel[]) => {
+    for (const imovel of imoveis) {
+      const referencias = referenciasPorId.get(imovel.idCaixa) ?? [];
+      referencias.push(imovel);
+      referenciasPorId.set(imovel.idCaixa, referencias);
+    }
+  };
+  adicionar(snapshot.topDescontos);
+  adicionar(snapshot.quedasRecentes);
+  for (const uf of snapshot.ufs) {
+    adicionar(uf.topDescontos);
+    for (const cidade of uf.cidades) adicionar(cidade.topDescontos);
+  }
+
+  const candidatos = [...referenciasPorId.values()]
+    .map((referencias) => referencias[0])
+    .filter((imovel): imovel is PublicImovel => Boolean(imovel))
+    .filter((imovel) => imovel.modalidade === "Venda Online")
+    .sort(
+      (a, b) =>
+        Number(b.descontoPct) - Number(a.descontoPct) ||
+        a.idCaixa.localeCompare(b.idCaixa),
+    )
+    .slice(0, MAX_PRAZOS_CONSULTADOS);
+  let proximo = 0;
+  let prazosEncontrados = 0;
+  let falhas = 0;
+
+  async function consultar() {
+    while (proximo < candidatos.length) {
+      const imovel = candidatos[proximo++];
+      if (!imovel) continue;
+
+      try {
+        const url = new URL(imovel.linkOficial);
+        if (
+          url.protocol !== "https:" ||
+          url.hostname !== "venda-imoveis.caixa.gov.br"
+        ) {
+          falhas += 1;
+          console.error(
+            `Link oficial inesperado para o imóvel ${imovel.idCaixa}.`,
+          );
+          continue;
+        }
+
+        const response = await fetch(url, {
+          signal: AbortSignal.timeout(10_000),
+          headers: {
+            "user-agent":
+              "Garimpo-Imoveis/0.1 (+https://github.com/tarlisodoria/garimpo-imoveis)",
+          },
+        });
+        if (!response.ok) {
+          falhas += 1;
+          console.error(
+            `Página da Caixa indisponível para o imóvel ${imovel.idCaixa}: HTTP ${response.status}.`,
+          );
+          continue;
+        }
+        if (new URL(response.url).hostname !== "venda-imoveis.caixa.gov.br") {
+          falhas += 1;
+          console.error(
+            `Redirecionamento inesperado ao consultar o imóvel ${imovel.idCaixa}.`,
+          );
+          continue;
+        }
+
+        const encerramentoEm = lerDataEncerramentoCaixa(await response.text());
+        if (prazoFuturo(encerramentoEm)) {
+          for (const referencia of referenciasPorId.get(imovel.idCaixa) ?? []) {
+            referencia.encerramentoEm = encerramentoEm;
+          }
+          prazosEncontrados += 1;
+        }
+      } catch (error) {
+        falhas += 1;
+        console.error(
+          `Não foi possível consultar o prazo oficial do imóvel ${imovel.idCaixa}: ${erroSeguro(error)}`,
+        );
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    }
+  }
+
+  await Promise.all(
+    Array.from({ length: CONCORRENCIA_PRAZOS }, () => consultar()),
+  );
+  console.log(
+    `Prazos da Caixa: ${prazosEncontrados} encontrados entre ${candidatos.length} imóveis consultados; ${falhas} consultas falharam.`,
+  );
+}
 
 async function carregarResumoEventos(agora: Date) {
   const historicoColetas = await db
@@ -168,6 +270,7 @@ async function main() {
         modalidade: imoveis.modalidade,
         aceitaFinanciamento: imoveis.aceitaFinanciamento,
         linkOficial: imoveis.linkOficial,
+        descricaoCurta: imoveis.descricaoCurta,
         primeiraVezVisto: imoveis.primeiraVezVisto,
       })
       .from(imoveis)
@@ -188,6 +291,8 @@ async function main() {
       modalidade: row.modalidade,
       aceitaFinanciamento: row.aceitaFinanciamento,
       linkOficial: row.linkOficial,
+      caracteristicas: lerCaracteristicasImovel(row.descricaoCurta),
+      encerramentoEm: null,
       economiaReais: calcularEconomia(
         String(row.preco),
         String(row.valorAvaliacao),
@@ -259,6 +364,8 @@ async function main() {
     ).slice(0, TOP_QUEDAS),
     ufs: ufPayload,
   };
+
+  await enriquecerPrazos(snapshot);
 
   const outputPath = path.join(process.cwd(), "data", "public-snapshot.json");
 

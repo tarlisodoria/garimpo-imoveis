@@ -30,6 +30,10 @@
 | Modalidade de venda          | `modalidade`                         | ex.: Venda Direta Online, Venda Online, Leilão SFI  |
 | Link de acesso               | `link_oficial`                       | página oficial do imóvel                            |
 
+A descrição também pode informar contagens de quartos, banheiros, salas e vagas de garagem, além das áreas total, privativa e do terreno. Esses campos são interpretados apenas quando aparecem explicitamente; valores zero e ausentes não são exibidos. A sigla `WC` representa um banheiro no card; se vier acompanhada de quantidade, prevalece o número informado. Nem todos os imóveis têm essas características na lista.
+
+Para os imóveis em destaque na modalidade **Venda Online**, a geração do snapshot consulta no máximo 120 páginas oficiais da Caixa, com duas consultas simultâneas e limite de tempo por página. Quando a página publica uma data exata, ela é guardada em `encerramentoEm` e exibida como prazo previsto. O cronômetro não é estimado para páginas sem essa informação; a Caixa pode prorrogar o prazo quando recebe propostas nos minutos finais. A modalidade Venda Direta Online não recebe contagem regressiva sem data publicada.
+
 A "Data de geração" vai para `imoveis_historico.data` e é exibida nos cartões como "Lista Caixa · dd/mm", para indicar a data-base dos dados apresentados. O texto não é repetido como aviso em todos os cartões; o link para a página oficial continua disponível para conferência. A lista pode ficar alguns dias atrás da página oficial, que é atualizada em tempo real.
 
 ## Tabelas (Postgres, Drizzle)
@@ -73,13 +77,17 @@ Uma linha por tentativa de coleta de UF. Colunas: `uf`, `iniciado_em`, `status` 
 | `quedasRecentes`  | até 12 maiores quedas percentuais dos últimos 7 dias, com `precoAnterior`, `quedaPct` e `quedaEm`            |
 | `ufs[]`           | por UF: `uf`, `listaDe` (data da lista), `totalImoveis`, `topDescontos` (até 50, 2 por cidade) e `cidades[]` |
 | `ufs[].cidades[]` | `nome`, `slug`, `totalImoveis` e `topDescontos` (até 80 imóveis)                                             |
+| `caracteristicas` | quartos, banheiros, salas, vagas e áreas; campos ausentes permanecem sem valor                               |
+| `encerramentoEm`  | data/hora ISO do prazo publicado pela Caixa, ou `null` quando não disponível                                 |
 
-Cada imóvel no snapshot traz os campos da tabela `imoveis` usados no site, mais `economiaReais` (avaliação − valor mínimo), `entrouEm` e `selo` (`novo`, `baixou` ou `null`). Snapshots antigos sem os campos novos continuam válidos: a leitura (`lib/public-data.ts`) preenche valores padrão.
+Cada imóvel no snapshot traz os campos da tabela `imoveis` usados no site, mais `economiaReais` (avaliação − valor mínimo), `entrouEm`, `selo` (`novo`, `baixou` ou `null`), as `caracteristicas` extraídas da descrição e o prazo oficial, quando disponível. Snapshots antigos sem os campos novos continuam válidos: a leitura (`lib/public-data.ts`) preenche valores padrão e converte a chave antiga `wcInformado` em um banheiro.
 
 ## Busca na home e interpretação das contagens
 
-A home monta um recorte de destaques com os maiores descontos globais e até seis imóveis por UF. Os controles de tipo e faixa de preço, o histograma e os cartões filtram somente esse recorte. Assim, a contagem mostrada ao selecionar um orçamento significa “imóveis em destaque nesta faixa”, não o número total de anúncios disponíveis na Caixa. Já os totais agregados de imóveis e cidades vêm dos campos completos do snapshot.
+A home monta um recorte de destaques com os maiores descontos globais e até seis imóveis por UF. Os controles de tipo, faixa de preço e características, o histograma e os cartões filtram somente esse recorte. Os IDs da busca principal também são usados para remover da seção de quedas recentes os anúncios já apresentados na home, evitando a repetição do mesmo imóvel em blocos diferentes. Assim, a contagem mostrada ao selecionar um orçamento significa “imóveis em destaque nesta faixa”, não o número total de anúncios disponíveis na Caixa. Já os totais agregados de imóveis e cidades vêm dos campos completos do snapshot.
 
 O tipo informado pela Caixa é agrupado para a legenda do mapa em casas (inclui sobrado), apartamentos, terrenos, galpões, comerciais (inclui prédio, loja e sala) e outros. Os pontos são posicionados de forma ilustrativa dentro da UF e não identificam cidade, bairro ou endereço. A lista pública não fornece coordenadas geográficas por anúncio para posicionamento preciso.
 
-O filtro de orçamento permite valores mínimo e máximo; as faixas sugeridas são atalhos. A régua usa uma escala logarítmica progressiva para manter faixas mais baixas ajustáveis mesmo quando há valores máximos muito maiores. O preço filtrado é o valor mínimo de venda fornecido pela Caixa, sujeito às regras da modalidade e à confirmação do edital.
+O filtro de orçamento permite valores mínimo e máximo; as faixas sugeridas são atalhos. A régua usa uma escala logarítmica progressiva para manter faixas mais baixas ajustáveis mesmo quando há valores máximos muito maiores. Quartos, banheiros, salas, vagas e metragem usam somente características presentes; área privativa tem prioridade, seguida de área total e de terreno. O preço filtrado é o valor mínimo de venda fornecido pela Caixa, sujeito às regras da modalidade e à confirmação do edital.
+
+Nas páginas de estado e cidade, tipo, faixa de preço e características refinam os imóveis destacados no snapshot. A página estadual também filtra por cidade; a municipal permite filtrar por bairro quando ele aparece nos destaques. Essas listas são limitadas e não representam o catálogo completo informado pela Caixa. O cronômetro aparece apenas quando há data exata publicada na página oficial, é apresentado como previsão e pode ficar sujeito a prorrogação.

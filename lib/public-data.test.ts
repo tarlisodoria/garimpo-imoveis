@@ -46,6 +46,36 @@ test("snapshot antigo sem campos novos recebe padrões seguros", () => {
   assert.equal(snapshot.topDescontos[0].economiaReais, "50000.00");
   assert.equal(snapshot.topDescontos[0].entrouEm, null);
   assert.equal(snapshot.ufs[0].cidades[0].topDescontos[0].selo, null);
+  assert.equal(snapshot.topDescontos[0].caracteristicas.quartos, null);
+});
+
+test("normaliza WC como um banheiro e remove a chave legada", () => {
+  const caracteristicas = {
+    quartos: 2,
+    banheiros: null,
+    salas: 1,
+    vagas: 1,
+    areaTotal: null,
+    areaPrivativa: 65.5,
+    areaTerreno: null,
+    wcInformado: true,
+  };
+  const snapshot = normalizarSnapshot({
+    generatedAt: null,
+    summary: { totalImoveis: 1, totalUfs: 1, totalCidades: 1 },
+    topDescontos: [{ ...imovelAntigo, caracteristicas }],
+    ufs: [],
+  });
+
+  assert.deepEqual(snapshot.topDescontos[0].caracteristicas, {
+    quartos: 2,
+    banheiros: 1,
+    salas: 1,
+    vagas: 1,
+    areaTotal: null,
+    areaPrivativa: 65.5,
+    areaTerreno: null,
+  });
 });
 
 test("selo desconhecido vira null", () => {

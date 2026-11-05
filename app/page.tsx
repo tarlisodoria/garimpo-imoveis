@@ -13,6 +13,7 @@ import {
   type PublicImovel,
   type PublicSnapshot,
 } from "../lib/public-data";
+import { excluirIdsJaExibidos } from "../lib/snapshot-calculos";
 import { siteDescription, siteName, siteUrl } from "../lib/site";
 
 const titulo = `${siteName}: imóveis da Caixa com desconto, monitorados todo dia`;
@@ -51,6 +52,8 @@ function paraCard(imovel: PublicImovel): CardImovelDados {
     economiaReais: imovel.economiaReais,
     entrouEm: imovel.entrouEm,
     selo: imovel.selo,
+    caracteristicas: imovel.caracteristicas,
+    encerramentoEm: imovel.encerramentoEm,
     cidadeNome: imovel.cidadeNome,
     listaDe: imovel.listaDe,
   };
@@ -81,6 +84,11 @@ function imoveisParaFiltro(snapshot: PublicSnapshot): CardImovelDados[] {
 export default function Home() {
   const snapshot = getPublicSnapshot();
   const imoveis = imoveisParaFiltro(snapshot);
+  const idsNaBusca = new Set(imoveis.map((imovel) => imovel.idCaixa));
+  const quedasSemRepeticao = excluirIdsJaExibidos(
+    snapshot.quedasRecentes,
+    idsNaBusca,
+  );
   const ufs = snapshot.ufs.map((estado) => ({
     uf: estado.uf,
     totalImoveis: estado.totalImoveis,
@@ -99,7 +107,7 @@ export default function Home() {
       />
       <Numeros summary={snapshot.summary} />
       <ExplorarImoveis imoveis={imoveis} ufs={ufs} />
-      <QuedasRecentes quedas={snapshot.quedasRecentes} />
+      <QuedasRecentes quedas={quedasSemRepeticao} />
       <ComoFunciona />
       <Faq />
       <NavegarUf ufs={snapshot.ufs} />

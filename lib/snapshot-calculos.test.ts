@@ -4,6 +4,7 @@ import { test } from "node:test";
 import {
   calcularEconomia,
   cortesCargaInicial,
+  excluirIdsJaExibidos,
   limitarPorCidade,
   selecionarQuedasRecentes,
   resumirEventos,
@@ -171,6 +172,15 @@ test("limitarPorCidade deixa no máximo 2 por cidade e preserva a ordem", () => 
     limitarPorCidade(ordenados, 1).map((i) => i.idCaixa),
     ["1", "4", "6"],
   );
+});
+
+test("excluirIdsJaExibidos evita repetir anúncios entre blocos da home", () => {
+  const quedas = [
+    { idCaixa: "1", destaque: "já aparece na busca" },
+    { idCaixa: "2", destaque: "exclusivo da seção de quedas" },
+  ];
+
+  assert.deepEqual(excluirIdsJaExibidos(quedas, new Set(["1"])), [quedas[1]]);
 });
 
 test("selecionarQuedasRecentes ordena pelo percentual e ignora carga e janela", () => {
