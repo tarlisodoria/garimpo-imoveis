@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { Rodape } from "../components/site/Rodape";
 import { Cabecalho } from "../components/site/Cabecalho";
+import { DadosEstruturados } from "../components/site/DadosEstruturados";
 import { siteDescription, siteName, siteUrl } from "../lib/site";
 
 import "./globals.css";
@@ -32,6 +33,11 @@ export const metadata: Metadata = {
     siteName,
     locale: "pt_BR",
   },
+  twitter: {
+    card: "summary",
+    title: siteName,
+    description: siteDescription,
+  },
 };
 
 type RootLayoutProps = Readonly<{
@@ -44,6 +50,16 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <DadosEstruturados
+          data={{
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: siteName,
+            url: siteUrl,
+            description: siteDescription,
+            inLanguage: "pt-BR",
+          }}
+        />
         <Cabecalho />
         {children}
         <Rodape />
