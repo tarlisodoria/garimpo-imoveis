@@ -12,14 +12,15 @@ export function QuedasRecentes({ quedas }: QuedasRecentesProps) {
   }
 
   return (
-    <section aria-labelledby="quedas" className="mt-20">
-      <h2
-        id="quedas"
-        className="text-3xl font-semibold tracking-tight text-slate-950"
-      >
+    <section
+      aria-labelledby="quedas"
+      id="quedas"
+      className="mt-20 scroll-mt-24 sm:mt-28"
+    >
+      <h2 className="text-3xl font-semibold tracking-tight text-[#173b50] sm:text-4xl">
         Maiores quedas de preço da semana
       </h2>
-      <p className="mt-3 max-w-2xl text-lg leading-8 text-slate-700">
+      <p className="mt-3 max-w-2xl leading-7 text-slate-600">
         Imóveis cujo valor mínimo de venda caiu nos últimos 7 dias, segundo a
         comparação diária das listas oficiais.
       </p>

@@ -16,7 +16,7 @@ flowchart LR
     neon[("Neon Postgres<br/>imoveis · imoveis_historico<br/>eventos · coletas")]
     repo["Repositório<br/>commit automático do snapshot"]
     build["next build<br/>export estático"]
-    pages["Cloudflare Pages<br/>~1.200 páginas"]
+    pages["Cloudflare Pages<br/>~1.250 páginas"]
 
     caixa --> coleta --> parser --> diff
     diff -->|lotes de 500| neon
@@ -52,8 +52,19 @@ flowchart LR
 ### 5. Site (`app/`, `components/`, `lib/`)
 
 - Next.js com `output: "export"`: home, páginas por UF e por cidade (`generateStaticParams`), status, termos e privacidade.
-- O único componente interativo é o filtro por estado e tipo dos maiores descontos; ele recebe só os campos que exibe, para não levar o snapshot inteiro para o navegador.
+- A busca exploratória recebe um recorte leve dos imóveis em destaque e os totais por UF/cidade, não o catálogo completo. O mapa SVG usa a malha estadual do IBGE; região e estado são selecionáveis e cada UF abre suas cidades.
+- Os filtros de tipo e de preço trabalham em conjunto sobre os imóveis em destaque. Os pontos coloridos indicam a presença de um tipo na UF, não coordenadas dos anúncios. A régua de orçamento usa escala logarítmica, histograma e limites numéricos; filtros e mapa são atualizados no navegador.
+- O botão de tema no cabeçalho salva a escolha claro/escuro em `localStorage`. O mapa mantém seu painel escuro e as linhas em destaque nos dois temas.
+- Os cartões tentam carregar fotos do domínio oficial da Caixa diretamente, sem copiar as imagens para o repositório, e exibem alternativa quando a origem não disponibiliza a fotografia.
 - Deploy por `wrangler pages deploy` (Direct Upload) no Cloudflare Pages, depois de `format:check` e build.
+
+#### Limites da busca visual
+
+O snapshot limita quantos imóveis detalhados são enviados à home; as contagens do orçamento, histograma, filtros e marcadores correspondem a esse recorte, não ao total de anúncios ativos. Os totais exibidos no mapa por estado e cidade vêm do snapshot completo agregado. Como a lista pública não informa latitude/longitude confiáveis por imóvel, os marcadores representam apenas a UF.
+
+#### Verificação local do redesign
+
+Antes da publicação desta versão, a interface foi verificada em máquina local com `npm run lint`, `npm run format:check`, `npm test` (46 testes em 11 arquivos), `npm run build` (1.249 páginas HTML) e `git diff --check`. Também foram exercitados no navegador os filtros de tipo e orçamento, os marcadores, a seleção de estado/cidade, a persistência do tema e a hidratação do HTML estático.
 
 ## Segurança
 

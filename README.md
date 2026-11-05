@@ -1,6 +1,8 @@
 # Garimpo Imóveis
 
-![Home do Garimpo Imóveis: números do monitoramento e maiores quedas de preço da semana](docs/img/home.png)
+![Mapa interativo do Garimpo Imóveis com filtros de tipos de imóvel](docs/img/home.png)
+
+![Filtro de orçamento com faixas rápidas, histograma de preços e régua ajustável](docs/img/orcamento.png)
 
 [![CI](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml)
 [![Coleta diária](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml)
@@ -16,6 +18,34 @@ Pipeline de dados que coleta todos os dias a lista oficial de imóveis à venda 
 
 A Caixa publica a lista de imóveis à venda como um CSV por estado, sem histórico, sem comparação entre dias e sem busca por desconto. Saber o que entrou na lista ou baixou de preço exige baixar e comparar arquivos manualmente. O projeto automatiza essa comparação e transforma o resultado em páginas navegáveis.
 
+## O que construí
+
+Redesenhei a vitrine para tornar a busca por oportunidades mais visual e direta:
+
+- **Mapa interativo do Brasil:** seleção de região e estado, com acesso às cidades atendidas em cada UF.
+- **Tipos de imóvel por cor:** filtros para casas, apartamentos, terrenos, galpões, imóveis comerciais e outros. Os marcadores são agrupados por estado porque a lista pública não fornece coordenadas exatas dos endereços.
+- **Filtro de orçamento:** atalhos de faixa de preço, histograma dos anúncios exibidos, régua de mínimo e máximo em escala progressiva e campos numéricos editáveis.
+- **Tema claro e escuro:** alternância no cabeçalho, com preferência salva no navegador.
+- **Fotos oficiais:** quando a Caixa disponibiliza uma imagem, ela é carregada diretamente da fonte. O projeto não copia nem hospeda as fotografias.
+- **Páginas de estado e cidade:** navegação contextual para continuar a busca e conferir as oportunidades publicadas.
+
+As contagens e os cartões da busca usam os imóveis em destaque incluídos no snapshot público, e não todo o catálogo ativo da Caixa. Preço, disponibilidade, edital, ocupação e regras podem mudar; a confirmação deve ser feita na página oficial do imóvel.
+
+## Validação antes da publicação
+
+Antes de subir esta versão, fiz os testes na minha máquina local:
+
+```bash
+npm run lint
+npm run format:check
+npm test
+npm run build
+```
+
+Os 46 testes automatizados passaram e o build estático do Next.js gerou 1.249 páginas HTML. Também conferi a interação no navegador: filtros de tipo e orçamento, atualização dos marcadores, navegação para cidades e persistência do tema escuro. O console ficou sem erros de hidratação.
+
+As capturas acima foram feitas na versão local validada. A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
+
 ## Como funciona
 
 ```mermaid
@@ -25,7 +55,7 @@ flowchart LR
     diff -->|"lotes de 500"| neon[("Neon<br/>Postgres")]
     neon --> snapshot["Snapshot JSON<br/>versionado"]
     snapshot --> build["Next.js<br/>export estático"]
-    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1.200 páginas"]
+    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1.250 páginas"]
 ```
 
 1. **Coleta:** um workflow agendado baixa o CSV de cada UF (uma requisição por UF por dia). Arquivos iguais ao último processado (mesmo SHA-256) são ignorados.
@@ -78,15 +108,15 @@ Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `
 
 ## Métricas
 
-| Métrica                | Valor                                           |
-| ---------------------- | ----------------------------------------------- |
-| Imóveis monitorados    | ~22 mil, 27 UFs                                 |
-| Coleta diária completa | ~5 min                                          |
-| Build e deploy         | ~2 min                                          |
-| Páginas estáticas      | 1.213 (6.087 arquivos; limite do Pages: 20.000) |
-| Testes                 | 43, em 10 arquivos                              |
-| Código                 | ~3.400 linhas de TypeScript                     |
-| Custo mensal           | R$ 0                                            |
+| Métrica                | Valor                                         |
+| ---------------------- | --------------------------------------------- |
+| Imóveis monitorados    | ~22 mil, 27 UFs                               |
+| Coleta diária completa | ~5 min                                        |
+| Build e deploy         | ~2 min                                        |
+| Páginas estáticas      | 1.249 HTML (limite do Pages: 20.000 arquivos) |
+| Testes                 | 46, em 11 arquivos                            |
+| Código                 | ~5,2 mil linhas de TypeScript                 |
+| Custo mensal           | R$ 0                                          |
 
 ## Como rodar
 
@@ -125,6 +155,8 @@ npm run analise                        # regenera docs/resultados.md
 ## Licença e dados
 
 O código está sob a [licença MIT](LICENSE). Os dados de imóveis são públicos, divulgados pela Caixa Econômica Federal, e os nomes de município vêm do IBGE; eles não são relicenciados pela MIT (veja [docs/dados.md](docs/dados.md)). Para citar o projeto, use [CITATION.cff](CITATION.cff).
+
+O mapa interativo usa a malha estadual do IBGE distribuída pelo [br-geojson](https://github.com/henriquemalvar/br-geojson), sob CC0 1.0. Os pontos coloridos agrupam os imóveis em destaque por tipo e estado; representam presença aproximada, não o endereço exato. A régua de orçamento filtra a vitrine por faixa de preço, com escala progressiva e opções rápidas. O seletor no cabeçalho alterna entre os temas claro e escuro e guarda a preferência neste navegador. Quando disponíveis, as fotos dos cartões são carregadas diretamente do domínio oficial da Caixa; os arquivos não são copiados para este projeto.
 
 ## Autor
 

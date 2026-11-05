@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 
 import { ComoFunciona } from "../components/home/ComoFunciona";
 import type { CardImovelDados } from "../components/home/CardImovel";
+import { ExplorarImoveis } from "../components/home/ExplorarImoveis";
 import { Faq } from "../components/home/Faq";
 import { Hero } from "../components/home/Hero";
 import { NavegarUf } from "../components/home/NavegarUf";
 import { Numeros } from "../components/home/Numeros";
 import { QuedasRecentes } from "../components/home/QuedasRecentes";
-import { TopDescontos } from "../components/home/TopDescontos";
 import {
   getPublicSnapshot,
   type PublicImovel,
@@ -81,42 +81,26 @@ function imoveisParaFiltro(snapshot: PublicSnapshot): CardImovelDados[] {
 export default function Home() {
   const snapshot = getPublicSnapshot();
   const imoveis = imoveisParaFiltro(snapshot);
+  const ufs = snapshot.ufs.map((estado) => ({
+    uf: estado.uf,
+    totalImoveis: estado.totalImoveis,
+    cidades: estado.cidades.map((cidade) => ({
+      nomeExibicao: cidade.nomeExibicao,
+      slug: cidade.slug,
+      totalImoveis: cidade.totalImoveis,
+    })),
+  }));
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+    <main className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
       <Hero
         atualizadoEm={snapshot.generatedAt}
         totalUfs={snapshot.summary.totalUfs}
+        totalImoveis={snapshot.summary.totalImoveis}
       />
       <Numeros summary={snapshot.summary} />
+      <ExplorarImoveis imoveis={imoveis} ufs={ufs} />
       <QuedasRecentes quedas={snapshot.quedasRecentes} />
-
-      <section
-        id="descontos"
-        aria-labelledby="descontos-titulo"
-        className="mt-20 scroll-mt-6"
-      >
-        <h2
-          id="descontos-titulo"
-          className="text-3xl font-semibold tracking-tight text-slate-950"
-        >
-          Maiores descontos agora
-        </h2>
-        <p className="mt-3 max-w-2xl text-lg leading-8 text-slate-700">
-          Imóveis da lista oficial com os maiores descontos sobre o valor de
-          avaliação. Filtre por estado e tipo.
-        </p>
-        <div className="mt-6">
-          {imoveis.length === 0 ? (
-            <p className="rounded-xl bg-white/70 p-5 text-slate-700">
-              A lista de imóveis está sendo atualizada. Volte em breve.
-            </p>
-          ) : (
-            <TopDescontos imoveis={imoveis} />
-          )}
-        </div>
-      </section>
-
       <ComoFunciona />
       <Faq />
       <NavegarUf ufs={snapshot.ufs} />
