@@ -43,7 +43,7 @@ export function Numeros({ summary }: NumerosProps) {
   return (
     <section
       aria-label="Números do monitoramento"
-      className="mt-4 scroll-mt-24 sm:mt-6"
+      className="mt-2 scroll-mt-24 sm:mt-3"
     >
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {itens.map((item) => (

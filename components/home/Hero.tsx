@@ -21,7 +21,7 @@ export function Hero({ atualizadoEm, totalUfs }: HeroProps) {
   const atualizacao = dataHora(atualizadoEm);
 
   return (
-    <section className="grid items-center gap-10 pt-10 pb-8 sm:pt-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14 lg:pb-12">
+    <section className="grid items-center gap-10 pt-10 pb-4 sm:pt-16 lg:grid-cols-[0.95fr_1.05fr] lg:gap-14">
       <div className="max-w-2xl">
         <p className="inline-flex items-center gap-2 rounded-full border border-[#173b50]/10 bg-white px-3 py-1.5 text-xs font-semibold text-[#315769] shadow-sm">
           <span className="h-2 w-2 rounded-full bg-[#83ae31]" />

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { CardImovel } from "../../components/home/CardImovel";
+import { BuscaRegional } from "../../components/home/BuscaRegional";
 import { toNumero } from "../../lib/formatar";
 import { getPublicSnapshot } from "../../lib/public-data";
 import { nomeUf, noUf } from "../../lib/ufs";
@@ -57,6 +57,19 @@ export default async function UfPage({ params }: UfPageProps) {
   }
 
   const nome = nomeUf(current.uf);
+  const imoveisPorId = new Map(
+    current.topDescontos.map((imovel) => [imovel.idCaixa, imovel]),
+  );
+  for (const cidade of current.cidades) {
+    for (const imovel of cidade.topDescontos) {
+      imoveisPorId.set(imovel.idCaixa, imovel);
+    }
+  }
+  const imoveisDestaque = [...imoveisPorId.values()].sort(
+    (a, b) =>
+      Number(b.descontoPct) - Number(a.descontoPct) ||
+      a.idCaixa.localeCompare(b.idCaixa),
+  );
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 pb-20 sm:px-6 lg:px-8">
@@ -83,19 +96,15 @@ export default async function UfPage({ params }: UfPageProps) {
         </p>
       </header>
 
-      <section aria-labelledby="descontos-uf" className="mt-12">
-        <h2
-          id="descontos-uf"
-          className="text-2xl font-semibold tracking-tight text-[#173b50]"
-        >
-          Maiores descontos {noUf(current.uf)}
-        </h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {current.topDescontos.slice(0, 18).map((imovel) => (
-            <CardImovel key={imovel.idCaixa} imovel={imovel} />
-          ))}
-        </div>
-      </section>
+      <BuscaRegional
+        imoveis={imoveisDestaque}
+        modo="estado"
+        totalImoveis={current.totalImoveis}
+        cidades={current.cidades.map((cidade) => ({
+          slug: cidade.slug,
+          nomeExibicao: cidade.nomeExibicao,
+        }))}
+      />
 
       <section aria-labelledby="cidades-uf" className="mt-16">
         <h2

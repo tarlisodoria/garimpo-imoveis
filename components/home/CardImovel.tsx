@@ -10,6 +10,7 @@ import {
 } from "../../lib/formatar";
 import type { PublicImovel } from "../../lib/public-data";
 import { IconeLinha } from "../site/IconeLinha";
+import { CronometroImovel } from "./CronometroImovel";
 import { FotoImovel } from "./FotoImovel";
 
 export type CardImovelDados = Pick<
@@ -30,8 +31,10 @@ export type CardImovelDados = Pick<
   | "economiaReais"
   | "entrouEm"
   | "selo"
+  | "caracteristicas"
   | "cidadeNome"
   | "listaDe"
+  | "encerramentoEm"
 >;
 
 type CardImovelProps = {
@@ -66,6 +69,48 @@ export function CardImovel({
   const monitoradoDesde = toDataCurta(imovel.entrouEm);
   const dataLista = toDiaMes(imovel.listaDe);
   const selo = imovel.selo ? SELOS[imovel.selo] : null;
+  const area = imovel.caracteristicas.areaPrivativa
+    ? {
+        valor: imovel.caracteristicas.areaPrivativa,
+        rotulo: "privativos",
+      }
+    : imovel.caracteristicas.areaTotal
+      ? { valor: imovel.caracteristicas.areaTotal, rotulo: "totais" }
+      : imovel.caracteristicas.areaTerreno
+        ? { valor: imovel.caracteristicas.areaTerreno, rotulo: "de terreno" }
+        : null;
+  const caracteristicas = [
+    imovel.caracteristicas.quartos
+      ? {
+          icone: "quartos" as const,
+          texto: `${imovel.caracteristicas.quartos} ${imovel.caracteristicas.quartos === 1 ? "quarto" : "quartos"}`,
+        }
+      : null,
+    imovel.caracteristicas.banheiros
+      ? {
+          icone: "banheiro" as const,
+          texto: `${imovel.caracteristicas.banheiros} ${imovel.caracteristicas.banheiros === 1 ? "banheiro" : "banheiros"}`,
+        }
+      : null,
+    area
+      ? {
+          icone: "area" as const,
+          texto: `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }).format(area.valor)} m² ${area.rotulo}`,
+        }
+      : null,
+    imovel.caracteristicas.vagas
+      ? {
+          icone: "vaga" as const,
+          texto: `${imovel.caracteristicas.vagas} ${imovel.caracteristicas.vagas === 1 ? "vaga" : "vagas"}`,
+        }
+      : null,
+    imovel.caracteristicas.salas
+      ? {
+          icone: "sala" as const,
+          texto: `${imovel.caracteristicas.salas} ${imovel.caracteristicas.salas === 1 ? "sala" : "salas"}`,
+        }
+      : null,
+  ].filter((item) => item !== null);
 
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#173b50]/10 bg-white shadow-[0_8px_28px_rgba(23,59,80,0.06)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(23,59,80,0.13)]">
@@ -101,6 +146,27 @@ export function CardImovel({
         </h3>
 
         {destaque}
+
+        {imovel.encerramentoEm ? (
+          <CronometroImovel encerramentoEm={imovel.encerramentoEm} />
+        ) : null}
+
+        {caracteristicas.length > 0 ? (
+          <ul
+            aria-label="Características informadas pela Caixa"
+            className="mt-3 flex flex-wrap gap-x-3 gap-y-2 text-xs font-medium text-slate-600"
+          >
+            {caracteristicas.map((item) => (
+              <li key={item.icone} className="inline-flex items-center gap-1.5">
+                <IconeLinha
+                  nome={item.icone}
+                  className="h-4 w-4 shrink-0 text-[#28749a]"
+                />
+                {item.texto}
+              </li>
+            ))}
+          </ul>
+        ) : null}
 
         <div className="mt-4 rounded-xl bg-[#f3f7f6] p-4">
           <div className="flex items-center gap-2 text-xs font-medium text-slate-500">

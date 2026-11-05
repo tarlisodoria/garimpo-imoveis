@@ -55,18 +55,23 @@ flowchart LR
 - A busca exploratória recebe um recorte leve dos imóveis em destaque e os totais por UF/cidade, não o catálogo completo. O mapa SVG usa a malha estadual do IBGE; região e estado são selecionáveis e cada UF abre suas cidades.
 - Em telas grandes, mapa e filtros ficam numa barra lateral sticky com rolagem própria; os resultados permanecem no fluxo principal. Em telas pequenas, um botão persistente abre o painel como diálogo modal, com foco controlado, fechamento por Escape e bloqueio da rolagem de fundo.
 - Os filtros de tipo e de preço trabalham em conjunto sobre os imóveis em destaque. Os pontos coloridos indicam a presença de um tipo na UF, não coordenadas dos anúncios. A régua de orçamento usa escala logarítmica, histograma e limites numéricos; filtros e mapa são atualizados no navegador.
+- A busca geral e as páginas de estado/cidade oferecem quartos, banheiros, salas, vagas e área como filtros mínimos/faixas, sempre com base nos campos explícitos da descrição. Nas páginas regionais, o filtro também considera tipo e preço; estado permite cidade e cidade permite bairro quando disponível. O painel regional informa que seus resultados são destaques limitados pelo snapshot.
+- Na home, imóveis presentes no conjunto da busca principal são removidos da seção de quedas recentes para evitar que o mesmo anúncio apareça em dois blocos.
 - Os cartões priorizam preço de venda, avaliação e diferença em reais. Modalidade e financiamento ficam como etiquetas; endereço e datas da lista/monitoramento aparecem separados, sem repetir em cada cartão o aviso sobre conferir as condições oficiais. O link direto para a Caixa continua visível.
 - O botão de tema no cabeçalho salva a escolha claro/escuro em `localStorage`. O mapa mantém seu painel escuro e as linhas em destaque nos dois temas.
 - Os cartões tentam carregar fotos do domínio oficial da Caixa diretamente, sem copiar as imagens para o repositório, e exibem alternativa quando a origem não disponibiliza a fotografia.
+- Os cartões mostram características extraídas da descrição da Caixa (quartos, banheiros, salas, vagas e áreas) com ícones; só valores explícitos e positivos são exibidos. `WC` é contado como um banheiro, conforme a interpretação adotada na interface.
+- A página do card pode incluir um cronômetro de Venda Online quando o snapshot registrou uma data/hora exata publicada pela Caixa. A geração consulta até 120 páginas oficiais por snapshot, com concorrência limitada; não cria prazo para anúncios sem data e sinaliza que a previsão pode ser prorrogada.
+- Os indicadores de atualização e cobertura ficam mais próximos da grade de números para reduzir o espaço vertical entre os blocos do topo.
 - Deploy por `wrangler pages deploy` (Direct Upload) no Cloudflare Pages, depois de `format:check` e build.
 
 #### Limites da busca visual
 
 O snapshot limita quantos imóveis detalhados são enviados à home; as contagens do orçamento, histograma, filtros e marcadores correspondem a esse recorte, não ao total de anúncios ativos. Os totais exibidos no mapa por estado e cidade vêm do snapshot completo agregado. Como a lista pública não informa latitude/longitude confiáveis por imóvel, os marcadores representam apenas a UF.
 
-#### Verificação local do redesign
+#### Verificação local da busca, filtros e cards
 
-Antes da publicação desta versão, a interface foi verificada em máquina local com `npm run lint`, `npm run format:check`, `npm test` (46 testes em 11 arquivos), `npm run build` (1.262 páginas HTML) e `git diff --check`. Também foram exercitados no navegador, em desktop e celular, o painel de filtros, a seleção de estado e atualização dos cartões, os marcadores, a leitura dos endereços e a ausência de overflow horizontal. As capturas do README foram registradas a partir dessa versão local antes do push e do deploy.
+Antes desta publicação, executei em máquina local `npm run lint`, `npm run format:check`, `npm test` (61 testes), `npm run build` (1.262 páginas HTML) e `git diff --check`, todos sem falhas. Também conferi no navegador os filtros por localização e características, a apresentação do prazo oficial nos cards e a ausência de anúncios repetidos entre os destaques da home e as quedas recentes. As capturas atualizadas do README foram registradas a partir do site local.
 
 ## Segurança
 

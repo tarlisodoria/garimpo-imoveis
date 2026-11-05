@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { CardImovel } from "../../../components/home/CardImovel";
+import { BuscaRegional } from "../../../components/home/BuscaRegional";
 import { toNumero } from "../../../lib/formatar";
 import { getPublicSnapshot } from "../../../lib/public-data";
 import { nomeUf } from "../../../lib/ufs";
@@ -104,23 +104,11 @@ export default async function CidadePage({ params }: CidadePageProps) {
         </p>
       </header>
 
-      <section aria-labelledby="descontos-cidade" className="mt-12">
-        <h2
-          id="descontos-cidade"
-          className="text-2xl font-semibold tracking-tight text-[#173b50]"
-        >
-          Imóveis por desconto
-        </h2>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {currentCidade.topDescontos.map((imovel) => (
-            <CardImovel
-              key={imovel.idCaixa}
-              imovel={imovel}
-              contexto="cidade"
-            />
-          ))}
-        </div>
-      </section>
+      <BuscaRegional
+        imoveis={currentCidade.topDescontos}
+        modo="cidade"
+        totalImoveis={currentCidade.totalImoveis}
+      />
     </main>
   );
 }

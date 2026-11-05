@@ -1,8 +1,10 @@
 # Garimpo Imóveis
 
-![Property search with a fixed filter sidebar, map and featured results](docs/img/home.png)
+![Updated property search with a map, property types and featured results](docs/img/home.png)
 
-![Property card with clear price, savings, sale type, address and dates](docs/img/card-imovel.png)
+![Property card with listing features and the official estimated deadline countdown](docs/img/card-imovel.png)
+
+![City, price and property feature filters on the Belém listings page](docs/img/filtros-regionais.png)
 
 ![Budget filter with quick price ranges, histogram and adjustable slider](docs/img/orcamento.png)
 
@@ -28,8 +30,11 @@ I redesigned the showcase to make exploring opportunities more visual, straightf
 - **Interactive map of Brazil:** select a region or state, browse its cities and update results by location.
 - **Color-coded property types:** filter houses, apartments, land, warehouses, commercial properties and other types. Markers are grouped by state because the public list does not provide exact address coordinates.
 - **Budget filter:** quick price ranges, a histogram of displayed listings, a progressive-scale minimum/maximum slider and editable numeric fields.
+- **Property feature filters:** bedrooms, bathrooms, living rooms, parking spaces and area on the main search and state/city pages; local pages also filter by city or neighborhood when available.
 - **Light and dark themes:** a header switch saves the preference in the browser.
-- **Clearer listing cards:** sale price, appraisal and savings are emphasized; sale type, financing, address and dates use concise rows and small icons.
+- **Clearer listing cards:** sale price, appraisal and savings are emphasized; sale type, financing, address and dates use concise rows and small icons. Bedrooms, bathrooms, living rooms, parking spaces and areas also appear when explicitly listed by Caixa, with no estimates for missing details.
+- **Online Sale countdown:** when the official Caixa page publishes an exact date and time, the card displays a countdown and notes that new bids may extend the deadline.
+- **No repeated homepage cards:** listings already shown in the featured search are omitted from the recent price-drop section.
 - **Official photos:** when Caixa makes an image available, it loads directly from the source. This project does not copy or host property photos.
 - **State and city pages:** contextual navigation to continue exploring and review listed opportunities.
 
@@ -46,9 +51,9 @@ npm test
 npm run build
 ```
 
-All 46 automated tests passed and the Next.js static build generated 1,262 HTML pages. I also checked the interface on desktop and mobile: sticky sidebar, accessible filter panel open and close, state selection, filtered results, card readability and complete addresses. Map interactions and theme selection were checked as well.
+All 61 automated tests passed and the Next.js static build generated 1,262 HTML pages. I also checked the local version in the browser: feature and location filters, countdowns for listings with an official deadline, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
 
-The screenshots above were captured from the validated local build before pushing to GitHub and publishing to Cloudflare Pages. Passing tests does not replace checking each property's terms on Caixa's official page.
+Passing tests does not replace checking each property's terms on Caixa's official page.
 
 ## How it works
 

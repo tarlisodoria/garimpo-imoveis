@@ -7,8 +7,14 @@ import mapData from "../../data/brasil-ufs.json";
 import { toCurrencyCompacto, toNumero } from "../../lib/formatar";
 import { nomeUf } from "../../lib/ufs";
 import { TopDescontos } from "./TopDescontos";
+import { FiltroCaracteristicas } from "./FiltroCaracteristicas";
 import { FiltroPreco, type FaixaPreco } from "./FiltroPreco";
 import type { CardImovelDados } from "./CardImovel";
+import {
+  filtrarPorCaracteristicas,
+  FILTROS_CARACTERISTICAS_VAZIOS,
+  type FiltrosCaracteristicas,
+} from "../../lib/filtro-caracteristicas";
 
 type Position = [number, number];
 type PolygonGeometry = {
@@ -206,6 +212,8 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
     () => new Set(CATEGORIAS_IMOVEL.map((categoria) => categoria.id)),
   );
   const [faixaPreco, setFaixaPreco] = useState<FaixaPreco | null>(null);
+  const [filtrosCaracteristicas, setFiltrosCaracteristicas] =
+    useState<FiltrosCaracteristicas>(FILTROS_CARACTERISTICAS_VAZIOS);
 
   useEffect(() => {
     if (!filtrosAbertos) return;
@@ -255,18 +263,22 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
     return Math.ceil(maiorPreco / 100_000) * 100_000;
   }, [imoveis]);
 
+  const imoveisComCaracteristicas = useMemo(
+    () => filtrarPorCaracteristicas(imoveis, filtrosCaracteristicas),
+    [filtrosCaracteristicas, imoveis],
+  );
   const totaisPorCategoria = useMemo(() => {
     const totais = new Map<CategoriaImovel, number>();
-    for (const imovel of imoveis) {
+    for (const imovel of imoveisComCaracteristicas) {
       const categoria = categoriaDoTipo(imovel.tipo);
       totais.set(categoria, (totais.get(categoria) ?? 0) + 1);
     }
     return totais;
-  }, [imoveis]);
+  }, [imoveisComCaracteristicas]);
 
   const totaisPorUfECategoria = useMemo(() => {
     const totais = new Map<string, Map<CategoriaImovel, number>>();
-    for (const imovel of imoveis) {
+    for (const imovel of imoveisComCaracteristicas) {
       const preco = Number(imovel.preco);
       if (
         faixaPreco &&
@@ -282,13 +294,13 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
       totais.set(imovel.uf, categorias);
     }
     return totais;
-  }, [faixaPreco, imoveis]);
+  }, [faixaPreco, imoveisComCaracteristicas]);
 
   const categoriasVisiveis = CATEGORIAS_IMOVEL.filter(
     (categoria) => (totaisPorCategoria.get(categoria.id) ?? 0) > 0,
   );
-  const imoveisFiltradosPorCategoria = imoveis.filter((imovel) =>
-    categoriasSelecionadas.has(categoriaDoTipo(imovel.tipo)),
+  const imoveisFiltradosPorCategoria = imoveisComCaracteristicas.filter(
+    (imovel) => categoriasSelecionadas.has(categoriaDoTipo(imovel.tipo)),
   );
   const estadoSelecionado = ufs.find((estado) => estado.uf === ufSelecionada);
   const regiaoAtual = REGIOES.find(
@@ -814,6 +826,12 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
             faixa={faixaPreco}
             onChange={setFaixaPreco}
           />
+          <div className="rounded-[1.5rem] border border-[#173b50]/10 bg-white p-4 shadow-[0_18px_48px_rgba(23,59,80,0.07)] sm:p-5">
+            <FiltroCaracteristicas
+              value={filtrosCaracteristicas}
+              onChange={setFiltrosCaracteristicas}
+            />
+          </div>
         </aside>
 
         <div className="min-w-0">
@@ -846,6 +864,11 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
                   {localSelecionado} · {categoriasSelecionadas.size} tipos
                   {faixaPreco
                     ? ` · ${toCurrencyCompacto(faixaPreco.minimo)}–${toCurrencyCompacto(faixaPreco.maximo)}`
+                    : ""}
+                  {Object.values(filtrosCaracteristicas).some(
+                    (valor) => valor !== null,
+                  )
+                    ? " · características"
                     : ""}
                 </span>
               </span>

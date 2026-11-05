@@ -106,6 +106,13 @@ export function limitarPorCidade<T extends { uf: string; cidadeSlug: string }>(
   });
 }
 
+export function excluirIdsJaExibidos<T extends { idCaixa: string }>(
+  itens: T[],
+  idsJaExibidos: ReadonlySet<string>,
+): T[] {
+  return itens.filter((item) => !idsJaExibidos.has(item.idCaixa));
+}
+
 export type QuedaEvento = {
   idCaixa: string;
   uf: string;

@@ -1,8 +1,10 @@
 # Garimpo Imóveis
 
-![Busca de imóveis com filtros fixos à esquerda, mapa e resultados em destaque](docs/img/home.png)
+![Busca atualizada com mapa, tipos de imóvel e resultados em destaque](docs/img/home.png)
 
-![Card de imóvel com preço, economia, modalidade, endereço e datas organizados](docs/img/card-imovel.png)
+![Card com características do imóvel e cronômetro do prazo previsto da Caixa](docs/img/card-imovel.png)
+
+![Filtros de cidade, preço e características na página de imóveis de Belém](docs/img/filtros-regionais.png)
 
 ![Filtro de orçamento com faixas rápidas, histograma de preços e régua ajustável](docs/img/orcamento.png)
 
@@ -28,8 +30,11 @@ Redesenhei a vitrine para tornar a busca por oportunidades mais visual, direta e
 - **Mapa interativo do Brasil:** seleção de região e estado, com acesso às cidades atendidas em cada UF e resultados atualizados pelo local selecionado.
 - **Tipos de imóvel por cor:** filtros para casas, apartamentos, terrenos, galpões, imóveis comerciais e outros. Os marcadores são agrupados por estado porque a lista pública não fornece coordenadas exatas dos endereços.
 - **Filtro de orçamento:** atalhos de faixa de preço, histograma dos anúncios exibidos, régua de mínimo e máximo em escala progressiva e campos numéricos editáveis.
+- **Filtros por características:** quartos, banheiros, salas, vagas e metragem na busca geral e nas páginas por estado/cidade; a lista local também permite refinar por cidade ou bairro quando esses dados estão disponíveis.
 - **Tema claro e escuro:** alternância no cabeçalho, com preferência salva no navegador.
-- **Cards mais legíveis:** preço de venda, avaliação e economia em destaque; modalidade, financiamento, endereço e datas em linhas curtas, com ícones para apoiar a leitura.
+- **Cards mais legíveis:** preço de venda, avaliação e economia em destaque; modalidade, financiamento, endereço e datas em linhas curtas, com ícones para apoiar a leitura. Quando constam na descrição da Caixa, quartos, banheiros, salas, vagas e áreas também aparecem no card, sem completar dados ausentes por estimativa.
+- **Prazo previsto da Venda Online:** quando a página oficial da Caixa publica a data e hora, o card mostra a contagem regressiva e avisa que novas propostas podem prorrogá-la.
+- **Sem cards repetidos na home:** anúncios já exibidos nos destaques não voltam a aparecer no bloco de quedas recentes.
 - **Fotos oficiais:** quando a Caixa disponibiliza uma imagem, ela é carregada diretamente da fonte. O projeto não copia nem hospeda as fotografias.
 - **Páginas de estado e cidade:** navegação contextual para continuar a busca e conferir as oportunidades publicadas.
 
@@ -46,9 +51,9 @@ npm test
 npm run build
 ```
 
-Os 46 testes automatizados passaram e o build estático do Next.js gerou 1.262 páginas HTML. Também conferi a interação no navegador, em desktop e celular: painel fixo, abertura e fechamento acessível dos filtros, seleção de estado, resultados filtrados, leitura dos cards e ausência de cortes no endereço. A seleção de tema e as interações do mapa também foram verificadas.
+Os 61 testes automatizados passaram e o build estático do Next.js gerou 1.262 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, cronômetro nos cards com prazo oficial, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
 
-As capturas acima foram feitas na versão local validada, antes do envio ao GitHub e da publicação no Cloudflare Pages. A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
+A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
 
 ## Como funciona
 

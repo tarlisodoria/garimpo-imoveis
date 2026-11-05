@@ -1,5 +1,9 @@
 import snapshot from "../data/public-snapshot.json";
 
+import {
+  lerCaracteristicasImovel,
+  type CaracteristicasImovel,
+} from "./caracteristicas-imovel";
 import { nomeCidade } from "./municipios";
 import {
   calcularEconomia,
@@ -24,6 +28,8 @@ export type PublicImovel = {
   economiaReais: string;
   entrouEm: string | null;
   selo: SeloImovel;
+  caracteristicas: CaracteristicasImovel;
+  encerramentoEm: string | null;
   /** Nome oficial do município (IBGE), resolvido no servidor. */
   cidadeNome: string;
   /** Data da lista oficial da UF de onde vieram modalidade e valores. */
@@ -33,11 +39,19 @@ export type PublicImovel = {
 /** Formato bruto do JSON: os campos novos podem faltar em snapshots antigos. */
 type RawImovel = Omit<
   PublicImovel,
-  "economiaReais" | "entrouEm" | "selo" | "cidadeNome" | "listaDe"
+  | "economiaReais"
+  | "entrouEm"
+  | "selo"
+  | "cidadeNome"
+  | "listaDe"
+  | "caracteristicas"
+  | "encerramentoEm"
 > & {
   economiaReais?: string;
   entrouEm?: string | null;
   selo?: string | null;
+  caracteristicas?: CaracteristicasImovel & { wcInformado?: boolean };
+  encerramentoEm?: string | null;
 };
 
 type RawCidade = Omit<PublicCidade, "topDescontos" | "nomeExibicao"> & {
@@ -103,12 +117,22 @@ export function normalizarImovel(
   raw: RawImovel,
   listaDe: string | null = null,
 ): PublicImovel {
+  const caracteristicasBrutas: CaracteristicasImovel & {
+    wcInformado?: boolean;
+  } = raw.caracteristicas ?? lerCaracteristicasImovel("");
+  const { wcInformado, ...caracteristicas } = caracteristicasBrutas;
+
   return {
     ...raw,
     economiaReais:
       raw.economiaReais ?? calcularEconomia(raw.preco, raw.valorAvaliacao),
     entrouEm: raw.entrouEm ?? null,
     selo: raw.selo === "novo" || raw.selo === "baixou" ? raw.selo : null,
+    caracteristicas: {
+      ...caracteristicas,
+      banheiros: caracteristicas.banheiros ?? (wcInformado ? 1 : null),
+    },
+    encerramentoEm: raw.encerramentoEm ?? null,
     cidadeNome: nomeCidade(raw.uf, raw.cidade),
     listaDe,
   };
