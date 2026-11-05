@@ -37,6 +37,7 @@ Redesenhei a vitrine para tornar a busca por oportunidades mais visual, direta e
 - **Sem cards repetidos na home:** anúncios já exibidos nos destaques não voltam a aparecer no bloco de quedas recentes.
 - **Fotos oficiais:** quando a Caixa disponibiliza uma imagem, ela é carregada diretamente da fonte. O projeto não copia nem hospeda as fotografias.
 - **Páginas de estado e cidade:** navegação contextual para continuar a busca e conferir as oportunidades publicadas.
+- **SEO técnico:** títulos, descrições e prévias sociais por estado/cidade, sitemap com datas reais do snapshot e dados estruturados de site e navegação.
 
 As contagens e os cartões da busca usam os imóveis em destaque incluídos no snapshot público, e não todo o catálogo ativo da Caixa. Preço, disponibilidade, edital, ocupação e regras podem mudar; a confirmação deve ser feita na página oficial do imóvel.
 

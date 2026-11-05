@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BuscaRegional } from "../../../components/home/BuscaRegional";
+import { DadosEstruturados } from "../../../components/site/DadosEstruturados";
 import { toNumero } from "../../../lib/formatar";
 import { getPublicSnapshot } from "../../../lib/public-data";
 import { nomeUf } from "../../../lib/ufs";
+import { siteName, siteUrl } from "../../../lib/site";
 
 type CidadePageProps = {
   params: Promise<{
@@ -50,12 +52,28 @@ export async function generateMetadata({
   }
 
   const nome = `${currentCidade.nomeExibicao}/${currentUf.uf}`;
+  const caminho = `/${currentUf.uf.toLowerCase()}/${currentCidade.slug}`;
+  const titulo = `Imóveis da Caixa com desconto em ${nome} | Garimpo Imóveis`;
+  const descricao = `${currentCidade.totalImoveis} imóveis da Caixa à venda em ${nome}, ordenados por desconto, com link para a página oficial.`;
 
   return {
-    title: `Imóveis da Caixa com desconto em ${nome} | Garimpo Imóveis`,
-    description: `${currentCidade.totalImoveis} imóveis da Caixa à venda em ${nome}, ordenados por desconto, com link para a página oficial.`,
+    title: titulo,
+    description: descricao,
     alternates: {
-      canonical: `/${currentUf.uf.toLowerCase()}/${currentCidade.slug}`,
+      canonical: caminho,
+    },
+    openGraph: {
+      type: "website",
+      url: caminho,
+      title: titulo,
+      description: descricao,
+      siteName,
+      locale: "pt_BR",
+    },
+    twitter: {
+      card: "summary",
+      title: titulo,
+      description: descricao,
     },
   };
 }
@@ -70,9 +88,37 @@ export default async function CidadePage({ params }: CidadePageProps) {
 
   const nomeCidade = currentCidade.nomeExibicao;
   const nomeEstado = nomeUf(currentUf.uf);
+  const caminhoEstado = `/${currentUf.uf.toLowerCase()}`;
+  const caminhoCidade = `${caminhoEstado}/${currentCidade.slug}`;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 pb-20 sm:px-6 lg:px-8">
+      <DadosEstruturados
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: siteName,
+              item: siteUrl,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: nomeEstado,
+              item: `${siteUrl}${caminhoEstado}`,
+            },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: nomeCidade,
+              item: `${siteUrl}${caminhoCidade}`,
+            },
+          ],
+        }}
+      />
       <nav className="text-sm text-slate-500" aria-label="Navegação">
         <Link href="/" className="underline-offset-4 hover:underline">
           Início

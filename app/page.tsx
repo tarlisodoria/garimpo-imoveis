@@ -30,6 +30,11 @@ export const metadata: Metadata = {
     siteName,
     locale: "pt_BR",
   },
+  twitter: {
+    card: "summary",
+    title: titulo,
+    description: siteDescription,
+  },
 };
 
 const TOP_POR_UF_NO_FILTRO = 6;

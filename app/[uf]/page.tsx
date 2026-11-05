@@ -3,9 +3,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BuscaRegional } from "../../components/home/BuscaRegional";
+import { DadosEstruturados } from "../../components/site/DadosEstruturados";
 import { toNumero } from "../../lib/formatar";
 import { getPublicSnapshot } from "../../lib/public-data";
 import { nomeUf, noUf } from "../../lib/ufs";
+import { siteName, siteUrl } from "../../lib/site";
 
 type UfPageProps = {
   params: Promise<{
@@ -42,6 +44,19 @@ export async function generateMetadata({
     alternates: {
       canonical: `/${current.uf.toLowerCase()}`,
     },
+    openGraph: {
+      type: "website",
+      url: `/${current.uf.toLowerCase()}`,
+      title: `Imóveis da Caixa ${noUf(current.uf)} | Garimpo Imóveis`,
+      description: `${current.totalImoveis} imóveis da Caixa à venda ${noUf(current.uf)}, ordenados por desconto.`,
+      siteName: "Garimpo Imóveis",
+      locale: "pt_BR",
+    },
+    twitter: {
+      card: "summary",
+      title: `Imóveis da Caixa ${noUf(current.uf)} | Garimpo Imóveis`,
+      description: `${current.totalImoveis} imóveis da Caixa à venda ${noUf(current.uf)}, ordenados por desconto.`,
+    },
   };
 }
 
@@ -57,6 +72,7 @@ export default async function UfPage({ params }: UfPageProps) {
   }
 
   const nome = nomeUf(current.uf);
+  const caminhoUf = `/${current.uf.toLowerCase()}`;
   const imoveisPorId = new Map(
     current.topDescontos.map((imovel) => [imovel.idCaixa, imovel]),
   );
@@ -73,6 +89,26 @@ export default async function UfPage({ params }: UfPageProps) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8 pb-20 sm:px-6 lg:px-8">
+      <DadosEstruturados
+        data={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: siteName,
+              item: siteUrl,
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: nome,
+              item: `${siteUrl}${caminhoUf}`,
+            },
+          ],
+        }}
+      />
       <nav className="text-sm text-slate-500" aria-label="Navegação">
         <Link href="/" className="underline-offset-4 hover:underline">
           Início

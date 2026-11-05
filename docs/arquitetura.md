@@ -52,6 +52,7 @@ flowchart LR
 ### 5. Site (`app/`, `components/`, `lib/`)
 
 - Next.js com `output: "export"`: home, páginas por UF e por cidade (`generateStaticParams`), status, termos e privacidade.
+- SEO técnico: canonical e metadados Open Graph/Twitter específicos por UF/cidade, JSON-LD `WebSite` e `BreadcrumbList`; o sitemap usa a data de geração do snapshot nas páginas cujos dados mudam diariamente, sem marcar páginas legais/status como atualizadas.
 - A busca exploratória recebe um recorte leve dos imóveis em destaque e os totais por UF/cidade, não o catálogo completo. O mapa SVG usa a malha estadual do IBGE; região e estado são selecionáveis e cada UF abre suas cidades.
 - Em telas grandes, mapa e filtros ficam numa barra lateral sticky com rolagem própria; os resultados permanecem no fluxo principal. Em telas pequenas, um botão persistente abre o painel como diálogo modal, com foco controlado, fechamento por Escape e bloqueio da rolagem de fundo.
 - Os filtros de tipo e de preço trabalham em conjunto sobre os imóveis em destaque. Os pontos coloridos indicam a presença de um tipo na UF, não coordenadas dos anúncios. A régua de orçamento usa escala logarítmica, histograma e limites numéricos; filtros e mapa são atualizados no navegador.
