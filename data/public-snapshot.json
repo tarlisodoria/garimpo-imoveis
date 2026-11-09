@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T13:28:27.911Z",
+  "generatedAt": "2026-11-09T16:24:26.673Z",
   "summary": {
     "totalImoveis": 23997,
     "totalUfs": 27,
@@ -194012,7 +194012,7 @@
                 "areaPrivativa": 48,
                 "areaTerreno": null
               },
-              "encerramentoEm": "2026-11-10T21:00:00.000Z",
+              "encerramentoEm": null,
               "economiaReais": "91142.66",
               "entrouEm": "2026-10-20T06:41:50.812Z",
               "selo": "baixou"
