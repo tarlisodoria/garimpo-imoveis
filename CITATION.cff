@@ -10,7 +10,7 @@ authors:
     given-names: "Tarliso"
 type: software
 license: MIT
-version: "1.0.0"
+version: "1.1.0"
 date-released: "2026-10-20"
 repository-code: "https://github.com/tarlisodoria/garimpo-imoveis"
 url: "https://garimpo-imoveis.pages.dev"

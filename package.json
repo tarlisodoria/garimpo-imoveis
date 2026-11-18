@@ -1,6 +1,6 @@
 {
   "name": "garimpo-imoveis",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Pipeline diário da lista de imóveis à venda da Caixa e site estático com descontos por estado e cidade.",
   "private": true,
   "scripts": {
@@ -26,8 +26,8 @@
     "url": "git+https://github.com/tarlisodoria/garimpo-imoveis.git"
   },
   "keywords": [],
-  "author": "",
-  "license": "UNLICENSED",
+  "author": "Tarliso Dória",
+  "license": "MIT",
   "type": "module",
   "bugs": {
     "url": "https://github.com/tarlisodoria/garimpo-imoveis/issues"
