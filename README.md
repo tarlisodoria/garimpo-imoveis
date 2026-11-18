@@ -2,7 +2,7 @@
 
 ![Busca atualizada com mapa, tipos de imóvel e resultados em destaque](docs/img/home.png)
 
-![Card com características do imóvel e cronômetro do prazo previsto da Caixa](docs/img/card-imovel.png)
+![Card com características do imóvel](docs/img/card-imovel.png)
 
 ![Filtros de cidade, preço e características na página de imóveis de Belém](docs/img/filtros-regionais.png)
 
@@ -33,7 +33,6 @@ Redesenhei a vitrine para tornar a busca por oportunidades mais visual, direta e
 - **Filtros por características:** quartos, banheiros, salas, vagas e metragem na busca geral e nas páginas por estado/cidade; a lista local também permite refinar por cidade ou bairro quando esses dados estão disponíveis.
 - **Tema claro e escuro:** alternância no cabeçalho, com preferência salva no navegador.
 - **Cards mais legíveis:** preço de venda, avaliação e economia em destaque; modalidade, financiamento, endereço e datas em linhas curtas, com ícones para apoiar a leitura. Quando constam na descrição da Caixa, quartos, banheiros, salas, vagas e áreas também aparecem no card, sem completar dados ausentes por estimativa.
-- **Prazo previsto da Venda Online:** quando a página oficial da Caixa publica a data e hora, o card mostra a contagem regressiva e avisa que novas propostas podem prorrogá-la.
 - **Sem cards repetidos na home:** anúncios já exibidos nos destaques não voltam a aparecer no bloco de quedas recentes.
 - **Fotos oficiais:** quando a Caixa disponibiliza uma imagem, ela é carregada diretamente da fonte. O projeto não copia nem hospeda as fotografias.
 - **Páginas de estado e cidade:** navegação contextual para continuar a busca e conferir as oportunidades publicadas.
@@ -52,7 +51,7 @@ npm test
 npm run build
 ```
 
-Os 61 testes automatizados passaram e o build estático do Next.js gerou 1.262 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, cronômetro nos cards com prazo oficial, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
+Os 58 testes automatizados passaram e o build estático do Next.js gerou 1.262 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
 
 A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
 
@@ -125,7 +124,7 @@ Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `
 | Coleta diária completa | ~5 min                                        |
 | Build e deploy         | ~2 min                                        |
 | Páginas estáticas      | 1.262 HTML (limite do Pages: 20.000 arquivos) |
-| Testes                 | 46, em 11 arquivos                            |
+| Testes                 | 58, em 14 arquivos                            |
 | Código                 | ~5,3 mil linhas de TypeScript                 |
 | Custo mensal           | R$ 0                                          |
 

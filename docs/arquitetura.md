@@ -62,7 +62,6 @@ flowchart LR
 - O botão de tema no cabeçalho salva a escolha claro/escuro em `localStorage`. O mapa mantém seu painel escuro e as linhas em destaque nos dois temas.
 - Os cartões tentam carregar fotos do domínio oficial da Caixa diretamente, sem copiar as imagens para o repositório, e exibem alternativa quando a origem não disponibiliza a fotografia.
 - Os cartões mostram características extraídas da descrição da Caixa (quartos, banheiros, salas, vagas e áreas) com ícones; só valores explícitos e positivos são exibidos. `WC` é contado como um banheiro, conforme a interpretação adotada na interface.
-- A página do card pode incluir um cronômetro de Venda Online quando o snapshot registrou uma data/hora exata publicada pela Caixa. A geração consulta até 120 páginas oficiais por snapshot, com concorrência limitada; não cria prazo para anúncios sem data e sinaliza que a previsão pode ser prorrogada.
 - Os indicadores de atualização e cobertura ficam mais próximos da grade de números para reduzir o espaço vertical entre os blocos do topo.
 - Deploy por `wrangler pages deploy` (Direct Upload) no Cloudflare Pages, depois de `format:check` e build.
 

@@ -35,7 +35,6 @@ function imovel(
       areaPrivativa: 65,
       areaTerreno: null,
     },
-    encerramentoEm: null,
     cidadeNome: "Belém",
     listaDe: null,
     ...overrides,

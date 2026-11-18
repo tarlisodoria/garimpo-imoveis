@@ -59,7 +59,6 @@ function paraCard(imovel: PublicImovel): CardImovelDados {
     entrouEm: imovel.entrouEm,
     selo: imovel.selo,
     caracteristicas: imovel.caracteristicas,
-    encerramentoEm: imovel.encerramentoEm,
     cidadeNome: imovel.cidadeNome,
     listaDe: imovel.listaDe,
   };

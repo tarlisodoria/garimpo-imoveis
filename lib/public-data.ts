@@ -29,7 +29,6 @@ export type PublicImovel = {
   entrouEm: string | null;
   selo: SeloImovel;
   caracteristicas: CaracteristicasImovel;
-  encerramentoEm: string | null;
   /** Nome oficial do município (IBGE), resolvido no servidor. */
   cidadeNome: string;
   /** Data da lista oficial da UF de onde vieram modalidade e valores. */
@@ -45,13 +44,11 @@ type RawImovel = Omit<
   | "cidadeNome"
   | "listaDe"
   | "caracteristicas"
-  | "encerramentoEm"
 > & {
   economiaReais?: string;
   entrouEm?: string | null;
   selo?: string | null;
   caracteristicas?: CaracteristicasImovel & { wcInformado?: boolean };
-  encerramentoEm?: string | null;
 };
 
 type RawCidade = Omit<PublicCidade, "topDescontos" | "nomeExibicao"> & {
@@ -132,7 +129,6 @@ export function normalizarImovel(
       ...caracteristicas,
       banheiros: caracteristicas.banheiros ?? (wcInformado ? 1 : null),
     },
-    encerramentoEm: raw.encerramentoEm ?? null,
     cidadeNome: nomeCidade(raw.uf, raw.cidade),
     listaDe,
   };

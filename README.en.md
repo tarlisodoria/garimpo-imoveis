@@ -2,7 +2,7 @@
 
 ![Updated property search with a map, property types and featured results](docs/img/home.png)
 
-![Property card with listing features and the official estimated deadline countdown](docs/img/card-imovel.png)
+![Property card with listing features](docs/img/card-imovel.png)
 
 ![City, price and property feature filters on the Belém listings page](docs/img/filtros-regionais.png)
 
@@ -33,7 +33,6 @@ I redesigned the showcase to make exploring opportunities more visual, straightf
 - **Property feature filters:** bedrooms, bathrooms, living rooms, parking spaces and area on the main search and state/city pages; local pages also filter by city or neighborhood when available.
 - **Light and dark themes:** a header switch saves the preference in the browser.
 - **Clearer listing cards:** sale price, appraisal and savings are emphasized; sale type, financing, address and dates use concise rows and small icons. Bedrooms, bathrooms, living rooms, parking spaces and areas also appear when explicitly listed by Caixa, with no estimates for missing details.
-- **Online Sale countdown:** when the official Caixa page publishes an exact date and time, the card displays a countdown and notes that new bids may extend the deadline.
 - **No repeated homepage cards:** listings already shown in the featured search are omitted from the recent price-drop section.
 - **Official photos:** when Caixa makes an image available, it loads directly from the source. This project does not copy or host property photos.
 - **State and city pages:** contextual navigation to continue exploring and review listed opportunities.
@@ -51,7 +50,7 @@ npm test
 npm run build
 ```
 
-All 61 automated tests passed and the Next.js static build generated 1,262 HTML pages. I also checked the local version in the browser: feature and location filters, countdowns for listings with an official deadline, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
+All 58 automated tests passed and the Next.js static build generated 1,262 HTML pages. I also checked the local version in the browser: feature and location filters, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
 
 Passing tests does not replace checking each property's terms on Caixa's official page.
 
@@ -124,7 +123,7 @@ A reproducible analysis lives in [docs/resultados.md](docs/resultados.md), gener
 | Full daily collection | ~5 min                                 |
 | Build and deploy      | ~2 min                                 |
 | Static pages          | 1,262 HTML (Pages limit: 20,000 files) |
-| Tests                 | 46, in 11 files                        |
+| Tests                 | 58, in 14 files                        |
 | Code                  | ~5,300 lines of TypeScript             |
 | Monthly cost          | BRL 0                                  |
 

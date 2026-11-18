@@ -10,7 +10,6 @@ import {
 } from "../../lib/formatar";
 import type { PublicImovel } from "../../lib/public-data";
 import { IconeLinha } from "../site/IconeLinha";
-import { CronometroImovel } from "./CronometroImovel";
 import { FotoImovel } from "./FotoImovel";
 
 export type CardImovelDados = Pick<
@@ -34,7 +33,6 @@ export type CardImovelDados = Pick<
   | "caracteristicas"
   | "cidadeNome"
   | "listaDe"
-  | "encerramentoEm"
 >;
 
 type CardImovelProps = {
@@ -146,10 +144,6 @@ export function CardImovel({
         </h3>
 
         {destaque}
-
-        {imovel.encerramentoEm ? (
-          <CronometroImovel encerramentoEm={imovel.encerramentoEm} />
-        ) : null}
 
         {caracteristicas.length > 0 ? (
           <ul

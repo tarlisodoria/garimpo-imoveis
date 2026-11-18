@@ -28,7 +28,6 @@ function imovel(
     entrouEm: null,
     selo: null,
     caracteristicas,
-    encerramentoEm: null,
     cidadeNome: "Belém",
     listaDe: null,
   };
