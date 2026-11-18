@@ -106,7 +106,7 @@ As decisões técnicas estão registradas como ADRs em [docs/adr/](docs/adr/). A
 5. **Lista atrasada em relação à página oficial.** Para alguns imóveis, a modalidade do CSV diferia da página oficial. O CSV servido em 20/10 ainda era o gerado em 16/10. Cada card agora mostra a data da lista de onde vieram os dados.
 6. **Datas um dia antes.** `2026-10-16` formatado com fuso de Brasília virava 15/10. Datas sem horário passaram a ser formatadas sem fuso, com teste.
 7. **Formatação quebrando no Windows.** 75 de 76 falhas do `format:check` eram fim de linha CRLF. Um `.gitattributes` com `eol=lf` resolveu, e o check passou a rodar no CI.
-8. **Bloqueio da fonte a servidores em nuvem.** Desde 16/11/2026, a Caixa responde HTTP 403 para todas as UFs quando o download parte do GitHub Actions; de um IP residencial, o mesmo CSV baixa normalmente. Decisão: não contornar o bloqueio (sem proxy, sem troca de IP, sem disfarce de navegador). O agendamento foi desativado em 18/11/2026, o disparo manual ficou para teste e o site exibe os dados congelados em 15/11/2026.
+8. **Bloqueio da fonte a servidores em nuvem.** Desde 16/11/2026, a Caixa responde HTTP 403 para todas as UFs quando o download parte do GitHub Actions; de um IP residencial, o mesmo CSV baixa normalmente. Decisão: não contornar o bloqueio (sem proxy, sem troca de IP, sem disfarce de navegador). O agendamento foi desativado em 18/11/2026, o disparo manual ficou para teste e o site exibe os dados congelados em 15/11/2026 ([pós-mortem](docs/incidentes/2026-11-bloqueio-403.md)).
 
 ## Resultados
 
