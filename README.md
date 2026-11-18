@@ -81,7 +81,7 @@ Detalhes em [docs/arquitetura.md](docs/arquitetura.md) e [docs/dados.md](docs/da
 | Orquestração   | GitHub Actions                          | agendamento, logs e secrets gratuitos, no mesmo lugar do código                          |
 | Banco          | Neon (Postgres serverless, São Paulo)   | não pausa o projeto por inatividade (diferente do Supabase); só suspende o processamento |
 | Acesso a dados | Drizzle ORM + drizzle-kit               | tipagem de ponta a ponta e migrations SQL versionadas                                    |
-| Linguagem      | TypeScript (Node 20, `tsx`)             | o mesmo código roda localmente e no CI                                                   |
+| Linguagem      | TypeScript (Node 22, `tsx`)             | o mesmo código roda localmente e no CI                                                   |
 | Site           | Next.js (`output: "export"`) + Tailwind | páginas estáticas por UF e cidade, boas para SEO                                         |
 | Hospedagem     | Cloudflare Pages (Direct Upload)        | CDN gratuita, sem servidor e sem credenciais na borda                                    |
 | Qualidade      | `node:test`, ESLint, Prettier           | testes sem dependências extras; formatação checada no CI                                 |
@@ -130,7 +130,7 @@ Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `
 
 ## Como rodar
 
-Requisitos: Node.js 20+ e npm 10+.
+Requisitos: Node.js 22+ e npm 10+.
 
 ```bash
 npm install

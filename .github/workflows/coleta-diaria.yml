@@ -11,6 +11,9 @@ on:
         default: "ALL"
         type: string
 
+permissions:
+  contents: read
+
 concurrency:
   group: coleta-diaria-caixa
   cancel-in-progress: false
@@ -37,7 +40,7 @@ jobs:
       REQUESTED_UF: ${{ inputs.uf || 'ALL' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
 
       # Logs públicos: esconde host, endpoint e usuário do banco em qualquer
       # saída posterior (o GitHub já mascara a URL completa do secret).
@@ -47,9 +50,9 @@ jobs:
           node -e 'const u = new URL(process.env.DATABASE_URL); for (const v of [u.hostname, u.hostname.split(".")[0], u.username]) if (v) console.log("::add-mask::" + v);'
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
         with:
-          node-version: 20
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies
@@ -104,7 +107,7 @@ jobs:
 
       - name: Create issue on failure
         if: failure()
-        uses: actions/github-script@v8
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8.0.0
         with:
           script: |
             const title = `Falha na coleta diaria da Caixa - ${new Date().toISOString().slice(0, 10)}`;

@@ -80,7 +80,7 @@ Details (in Portuguese) in [docs/arquitetura.md](docs/arquitetura.md) and [docs/
 | Orchestration | GitHub Actions                          | free scheduling, logs and secrets, next to the code                                   |
 | Database      | Neon (serverless Postgres, São Paulo)   | does not pause the project for inactivity (unlike Supabase); it only suspends compute |
 | Data access   | Drizzle ORM + drizzle-kit               | end-to-end types and versioned SQL migrations                                         |
-| Language      | TypeScript (Node 20, `tsx`)             | the same code runs locally and in CI                                                  |
+| Language      | TypeScript (Node 22, `tsx`)             | the same code runs locally and in CI                                                  |
 | Website       | Next.js (`output: "export"`) + Tailwind | static pages per state and city, SEO-friendly                                         |
 | Hosting       | Cloudflare Pages (Direct Upload)        | free CDN, no server, no credentials at the edge                                       |
 | Quality       | `node:test`, ESLint, Prettier           | tests with no extra dependencies; formatting checked in CI                            |
@@ -129,7 +129,7 @@ A reproducible analysis lives in [docs/resultados.md](docs/resultados.md), gener
 
 ## Running locally
 
-Requirements: Node.js 20+ and npm 10+.
+Requirements: Node.js 22+ and npm 10+.
 
 ```bash
 npm install
