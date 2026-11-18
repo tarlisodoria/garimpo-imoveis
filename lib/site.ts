@@ -11,7 +11,7 @@ export const siteUrl = normalizeUrl(
 export const siteName = "Garimpo Imóveis";
 
 export const siteDescription =
-  "Projeto de portfólio que monitora todos os dias a lista oficial de imóveis à venda da Caixa: maiores descontos, quedas de preço e imóveis novos por estado e cidade.";
+  "Projeto de portfólio com a lista oficial de imóveis à venda da Caixa, em dados congelados em 15/11/2026: maiores descontos, quedas de preço e imóveis novos por estado e cidade.";
 
 /** Código-fonte público do projeto. */
 export const repositorioUrl = "https://github.com/tarlisodoria/garimpo-imoveis";

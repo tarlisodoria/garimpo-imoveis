@@ -17,7 +17,7 @@ import {
 import { excluirIdsJaExibidos } from "../lib/snapshot-calculos";
 import { siteDescription, siteName, siteUrl } from "../lib/site";
 
-const titulo = `${siteName}: imóveis da Caixa com desconto, monitorados todo dia`;
+const titulo = `${siteName}: imóveis da Caixa com desconto, dados de 15/11/2026`;
 
 export const metadata: Metadata = {
   title: titulo,
