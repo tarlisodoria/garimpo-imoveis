@@ -1,8 +1,8 @@
 name: Coleta diaria Caixa
 
 on:
-  schedule:
-    - cron: "15 6 * * *"
+  # Agendamento desativado em 18/11/2026: a Caixa responde HTTP 403 a IPs de nuvem
+  # desde 16/11. Decisão: não contornar o bloqueio. Só disparo manual para teste.
   workflow_dispatch:
     inputs:
       uf:

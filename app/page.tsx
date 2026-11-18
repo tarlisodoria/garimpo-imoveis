@@ -8,6 +8,7 @@ import { Hero } from "../components/home/Hero";
 import { NavegarUf } from "../components/home/NavegarUf";
 import { Numeros } from "../components/home/Numeros";
 import { QuedasRecentes } from "../components/home/QuedasRecentes";
+import { AvisoDadosCongelados } from "../components/site/AvisoDadosCongelados";
 import {
   getPublicSnapshot,
   type PublicImovel,
@@ -106,6 +107,7 @@ export default function Home() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
+      <AvisoDadosCongelados />
       <Hero
         atualizadoEm={snapshot.generatedAt}
         totalUfs={snapshot.summary.totalUfs}

@@ -106,6 +106,7 @@ Technical decisions are recorded as ADRs (in Portuguese) in [docs/adr/](docs/adr
 5. **List lagging behind the official page.** For some properties the sale type in the CSV differed from the official page; the CSV served on Oct 20 had been generated on Oct 16. Each card now shows the date of the list the data came from.
 6. **Dates one day early.** `2026-10-16` formatted in the Brasília time zone became Oct 15. Date-only values are now formatted without a time zone, with a test.
 7. **Formatting failing on Windows.** 75 of 76 `format:check` failures were CRLF line endings. A `.gitattributes` with `eol=lf` fixed it, and the check now runs in CI.
+8. **Source blocking cloud servers.** Since Nov 16, 2026, Caixa answers HTTP 403 for every state when the download comes from GitHub Actions; from a residential IP the same CSV downloads normally. Decision: do not work around the block (no proxy, no IP rotation, no browser disguise). The schedule was disabled on Nov 18, 2026, manual dispatch remains for testing, and the website shows data frozen on Nov 15, 2026.
 
 ## Results
 
@@ -149,6 +150,7 @@ npm run analise                          # regenerate docs/resultados.md
 
 ## Limitations
 
+- **Data frozen on Nov 15, 2026.** Since Nov 16, 2026, Caixa blocks automated collection from cloud servers (HTTP 403). By project decision the block will not be worked around, and the daily collection is disabled.
 - Data depends on Caixa's list, which can lag days behind the official page. **Always check the source.**
 - The price shown is the minimum sale price; in online auctions ("Venda Online") the final price may be higher.
 - Collection does not retry automatically on temporary errors; the file is reprocessed the next day.

@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
 
+import { AvisoDadosCongelados } from "../../components/site/AvisoDadosCongelados";
+
 const serviceCards = [
   {
     name: "Coleta diária",
-    status: "Configurada",
-    detail: "Workflow cron + dispatch com coleta sequencial por UF.",
+    status: "Pausada",
+    detail:
+      "Agendamento desativado desde 16/11/2026; só disparo manual para teste.",
   },
   {
     name: "Issue automática",
     status: "Configurada",
-    detail: "Falhas criam issue no GitHub para acompanhamento.",
+    detail: "Falhas em execuções manuais criam issue no GitHub.",
   },
   {
     name: "Site público",
@@ -19,7 +22,8 @@ const serviceCards = [
 ];
 
 const checkpoints = [
-  "A coleta cobre as 27 UFs, uma requisição por UF por dia, às 03:15 (Brasília).",
+  "Desde 16/11/2026 a Caixa responde HTTP 403 a downloads vindos do GitHub Actions; o bloqueio não será contornado.",
+  "Quando ativa, a coleta cobria as 27 UFs, uma requisição por UF por dia.",
   "O workflow diário roda os testes e aplica migrations antes da coleta.",
   "Falhas ficam registradas no banco e geram issue automaticamente no GitHub.",
   "O site público é gerado estaticamente a partir do snapshot versionado.",
@@ -52,6 +56,7 @@ export default function StatusPage() {
                 não consulta execuções do GitHub Actions nem dados do banco em
                 tempo real.
               </p>
+              <AvisoDadosCongelados />
             </div>
             <div className="rounded-2xl border border-emerald-900/10 bg-emerald-50 px-5 py-4 text-sm text-emerald-950 shadow-sm">
               <p className="font-semibold">Fonte deste resumo</p>

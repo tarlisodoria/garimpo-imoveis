@@ -25,7 +25,7 @@ export function Hero({ atualizadoEm, totalUfs }: HeroProps) {
       <div className="max-w-2xl">
         <p className="inline-flex items-center gap-2 rounded-full border border-[#173b50]/10 bg-white px-3 py-1.5 text-xs font-semibold text-[#315769] shadow-sm">
           <span className="h-2 w-2 rounded-full bg-[#83ae31]" />
-          Oportunidades da Caixa, atualizadas todos os dias
+          Oportunidades da Caixa, dados de 15/11/2026
         </p>
         <h1 className="mt-6 text-4xl leading-[1.08] font-semibold tracking-[-0.04em] text-[#173b50] sm:text-6xl">
           Um bom imóvel pode estar mais perto do que você imagina.
