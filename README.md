@@ -9,12 +9,13 @@
 ![Filtro de orçamento com faixas rápidas, histograma de preços e régua ajustável](docs/img/orcamento.png)
 
 [![CI](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml)
-[![Coleta diária](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml)
 [![Licença: MIT](https://img.shields.io/badge/licen%C3%A7a-MIT-green.svg)](LICENSE)
 
 > English version: [README.en.md](README.en.md)
 
-Pipeline de dados que coleta todos os dias a lista oficial de imóveis à venda da Caixa nas 27 UFs, detecta imóveis novos e quedas de preço e publica um site estático com os maiores descontos por estado e cidade.
+Pipeline de dados que coletou todos os dias, de outubro a novembro de 2026, a lista oficial de imóveis à venda da Caixa nas 27 UFs, detectou imóveis novos e quedas de preço e publica um site estático com os maiores descontos por estado e cidade.
+
+> **Dados congelados em 15/11/2026.** A partir de 16/11 a Caixa passou a bloquear downloads feitos por servidores em nuvem, e decidi não contornar o bloqueio. O site continua no ar com a última lista coletada. Detalhes no [pós-mortem](docs/incidentes/2026-11-bloqueio-403.md) e no [ADR 0009](docs/adr/0009-congelamento-da-coleta.md).
 
 **Site:** [garimpo-imoveis.pages.dev](https://garimpo-imoveis.pages.dev) · projeto de portfólio, sem fins comerciais e sem afiliação com a Caixa.
 
@@ -51,7 +52,7 @@ npm test
 npm run build
 ```
 
-Os 58 testes automatizados passaram e o build estático do Next.js gerou 1.262 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
+Os 74 testes automatizados passaram e o build estático do Next.js gerou 1.293 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
 
 A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
 
@@ -59,15 +60,15 @@ A aprovação dos testes não substitui a conferência das condições de cada i
 
 ```mermaid
 flowchart LR
-    caixa["CSV da Caixa<br/>27 UFs"] -->|"03:15 · GitHub Actions"| coleta["Coleta<br/>hash + parser"]
+    caixa["CSV da Caixa<br/>27 UFs"] -->|"GitHub Actions<br/>até 15/11/2026"| coleta["Coleta<br/>hash + parser"]
     coleta --> diff["Diff diário<br/>novo · queda · saiu"]
     diff -->|"lotes de 500"| neon[("Neon<br/>Postgres")]
     neon --> snapshot["Snapshot JSON<br/>versionado"]
     snapshot --> build["Next.js<br/>export estático"]
-    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1.260 páginas"]
+    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1.290 páginas"]
 ```
 
-1. **Coleta:** um workflow agendado baixa o CSV de cada UF (uma requisição por UF por dia). Arquivos iguais ao último processado (mesmo SHA-256) são ignorados.
+1. **Coleta:** até 15/11/2026, um workflow agendado baixava o CSV de cada UF (uma requisição por UF por dia). Arquivos iguais ao último processado (mesmo SHA-256) são ignorados. O agendamento está desativado desde 18/11/2026; o mesmo workflow continua disponível para disparo manual.
 2. **Comparação:** cada lista é comparada com o estado anterior; mudanças viram eventos e histórico de preço no Postgres.
 3. **Snapshot:** um JSON com números, maiores descontos e quedas da semana é gerado e commitado quando muda.
 4. **Publicação:** o Next.js gera páginas estáticas a partir do snapshot e o Cloudflare Pages as publica. O site não acessa o banco.
@@ -96,6 +97,7 @@ As decisões técnicas estão registradas como ADRs em [docs/adr/](docs/adr/). A
 - [0003](docs/adr/0003-corte-da-carga-inicial.md): a primeira coleta de cada UF não conta como "novidade".
 - [0004](docs/adr/0004-persistencia-em-lotes.md): gravação em lotes, com a coleta marcada como concluída só no fim.
 - [0008](docs/adr/0008-modo-vitrine-sem-backend.md): sem contas, cobrança nem código na borda.
+- [0009](docs/adr/0009-congelamento-da-coleta.md): coleta congelada depois do bloqueio da fonte, sem contornar o bloqueio.
 
 ## Problemas reais resolvidos
 
@@ -118,15 +120,18 @@ Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `
 
 ## Métricas
 
-| Métrica                | Valor                                         |
-| ---------------------- | --------------------------------------------- |
-| Imóveis monitorados    | ~22 mil, 27 UFs                               |
-| Coleta diária completa | ~5 min                                        |
-| Build e deploy         | ~2 min                                        |
-| Páginas estáticas      | 1.262 HTML (limite do Pages: 20.000 arquivos) |
-| Testes                 | 58, em 14 arquivos                            |
-| Código                 | ~5,3 mil linhas de TypeScript                 |
-| Custo mensal           | R$ 0                                          |
+Medido em 19/11/2026, sobre o código atual e o snapshot de 15/11/2026.
+
+| Métrica                               | Valor                                                |
+| ------------------------------------- | ---------------------------------------------------- |
+| Imóveis no último snapshot            | 23.769, em 27 UFs e 1.260 cidades                    |
+| Período monitorado                    | outubro a 15/11/2026                                 |
+| Coleta diária completa (quando ativa) | 6 a 8 min por execução                               |
+| Build e deploy                        | ~2 min                                               |
+| Páginas estáticas                     | 1.293 HTML, 6.489 arquivos (limite do Pages: 20.000) |
+| Testes                                | 74, em 16 arquivos                                   |
+| Código                                | 7.540 linhas de TypeScript, 6.007 sem contar testes  |
+| Custo mensal                          | R$ 0                                                 |
 
 ## Como rodar
 
@@ -153,15 +158,15 @@ npm run analise                        # regenera docs/resultados.md
 - **Dados congelados em 15/11/2026.** Desde 16/11/2026, a Caixa bloqueia a coleta automatizada a partir de servidores em nuvem (HTTP 403). Por decisão do projeto, o bloqueio não será contornado, e a coleta diária está desativada.
 - Os dados dependem da lista da Caixa, que pode atrasar dias em relação à página oficial. **Confirme sempre na fonte.**
 - O valor exibido é o valor mínimo de venda; na Venda Online há disputa e o valor final pode ser maior.
-- A coleta não repete o download automaticamente em caso de erro temporário; o arquivo é reprocessado no dia seguinte.
-- O histórico começa em outubro de 2026, quando o monitoramento começou.
+- O histórico cobre só o período monitorado, de outubro a 15/11/2026.
 - 12 de 1.187 cidades não têm correspondência no IBGE (regiões administrativas do DF, distritos e grafias diferentes) e aparecem sem acento.
 
 ## Próximos passos
 
-- Nova tentativa no download do CSV em erros 5xx e timeout, com espera exponencial e um disjuntor para não estourar o tempo do workflow.
+Com a coleta congelada ([pós-mortem](docs/incidentes/2026-11-bloqueio-403.md)), o foco passa a ser o que já foi coletado:
+
 - Testes de integração com um Postgres no CI, cobrindo coleta, diff e persistência de ponta a ponta.
-- Canal público com as quedas de preço do dia (por exemplo, um feed RSS gerado no build).
+- Publicação do conjunto de dados do período monitorado (imóveis, histórico de preços e eventos), com dicionário de dados e a indicação da fonte.
 
 ## Licença e dados
 

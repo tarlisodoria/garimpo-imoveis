@@ -1,4 +1,4 @@
-# ADR 0007 — Destaques limitados por cidade e nomes oficiais do IBGE
+# ADR 0007: Destaques limitados por cidade e nomes oficiais do IBGE
 
 **Status:** aceita
 

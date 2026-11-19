@@ -1,4 +1,4 @@
-# ADR 0008 — Modo vitrine: sem contas, cobrança nem backend na borda
+# ADR 0008: Modo vitrine: sem contas, cobrança nem backend na borda
 
 **Status:** aceita
 

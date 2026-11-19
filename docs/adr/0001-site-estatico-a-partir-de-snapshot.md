@@ -1,4 +1,4 @@
-# ADR 0001 — Site estático gerado a partir de um snapshot versionado
+# ADR 0001: Site estático gerado a partir de um snapshot versionado
 
 **Status:** aceita
 
@@ -18,3 +18,4 @@ O site precisa de páginas por estado e por cidade (mais de mil), boas para SEO,
 - Cada atualização de conteúdo exige um novo build e deploy (cerca de 2 minutos).
 - O snapshot fica no histórico do Git, o que dá rastreabilidade de cada publicação, ao custo de um arquivo de alguns megabytes por versão.
 - A leitura do snapshot aceita versões antigas, preenchendo valores padrão para campos que ainda não existiam.
+- Com a coleta congelada ([ADR 0009](0009-congelamento-da-coleta.md)), o snapshot de 15/11/2026 é o último publicado. O site continua sendo gerado a partir dele sem depender do banco.

@@ -1,4 +1,4 @@
-# ADR 0005 — Postgres no Neon com Drizzle
+# ADR 0005: Postgres no Neon com Drizzle
 
 **Status:** aceita
 

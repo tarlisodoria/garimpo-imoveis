@@ -1,6 +1,6 @@
-# ADR 0002 — Coleta diária no GitHub Actions, sequencial e idempotente por hash
+# ADR 0002: Coleta diária no GitHub Actions, sequencial e idempotente por hash
 
-**Status:** aceita
+**Status:** aceita; agendamento suspenso desde 18/11/2026 ([ADR 0009](0009-congelamento-da-coleta.md))
 
 ## Contexto
 
@@ -18,4 +18,5 @@ A Caixa publica um CSV por UF. A coleta precisa ser automática, gratuita e educ
 
 - Simples de depurar e fiel à regra de coleta educada; a coleta completa leva cerca de 5 minutos.
 - Rodar a mesma coleta duas vezes é seguro.
-- Erros temporários da fonte (por exemplo, HTTP 502) são registrados e o arquivo é reprocessado no dia seguinte. Uma nova tentativa com espera exponencial e timeout por requisição é uma melhoria planejada.
+- Erros temporários da fonte (por exemplo, HTTP 502) são registrados e o arquivo é reprocessado no dia seguinte.
+- A regra de não contornar bloqueios foi posta à prova em 16/11/2026, quando a Caixa passou a responder HTTP 403 a downloads vindos do GitHub Actions. A coleta foi congelada em vez de contornada ([ADR 0009](0009-congelamento-da-coleta.md)).

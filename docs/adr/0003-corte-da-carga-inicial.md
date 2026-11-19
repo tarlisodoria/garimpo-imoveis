@@ -1,4 +1,4 @@
-# ADR 0003 — Ignorar a carga inicial de cada UF nos números e destaques
+# ADR 0003: Ignorar a carga inicial de cada UF nos números e destaques
 
 **Status:** aceita
 

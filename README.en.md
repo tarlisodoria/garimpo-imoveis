@@ -9,12 +9,13 @@
 ![Budget filter with quick price ranges, histogram and adjustable slider](docs/img/orcamento.png)
 
 [![CI](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/ci.yml)
-[![Daily collection](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml/badge.svg)](https://github.com/tarlisodoria/garimpo-imoveis/actions/workflows/coleta-diaria.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 > Versão em português: [README.md](README.md)
 
-A data pipeline that collects, every day, the official list of properties for sale by Caixa Econômica Federal (a Brazilian state-owned bank) across all 27 Brazilian states, detects new listings and price drops, and publishes a static website with the largest discounts by state and city.
+A data pipeline that collected, every day from October to November 2026, the official list of properties for sale by Caixa Econômica Federal (a Brazilian state-owned bank) across all 27 Brazilian states, detected new listings and price drops, and publishes a static website with the largest discounts by state and city.
+
+> **Data frozen on Nov 15, 2026.** Starting Nov 16, Caixa began blocking downloads made from cloud servers, and I decided not to work around the block. The website stays online with the last list collected. Details in the [post-mortem](docs/incidentes/2026-11-bloqueio-403.md) and in [ADR 0009](docs/adr/0009-congelamento-da-coleta.md) (both in Portuguese).
 
 **Website:** [garimpo-imoveis.pages.dev](https://garimpo-imoveis.pages.dev) (in Portuguese) · portfolio project, non-commercial and not affiliated with Caixa.
 
@@ -50,7 +51,7 @@ npm test
 npm run build
 ```
 
-All 58 automated tests passed and the Next.js static build generated 1,262 HTML pages. I also checked the local version in the browser: feature and location filters, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
+All 74 automated tests passed and the Next.js static build generated 1,293 HTML pages. I also checked the local version in the browser: feature and location filters, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
 
 Passing tests does not replace checking each property's terms on Caixa's official page.
 
@@ -58,15 +59,15 @@ Passing tests does not replace checking each property's terms on Caixa's officia
 
 ```mermaid
 flowchart LR
-    caixa["Caixa CSV<br/>27 states"] -->|"03:15 · GitHub Actions"| coleta["Collection<br/>hash + parser"]
+    caixa["Caixa CSV<br/>27 states"] -->|"GitHub Actions<br/>until Nov 15, 2026"| coleta["Collection<br/>hash + parser"]
     coleta --> diff["Daily diff<br/>new · drop · removed"]
     diff -->|"batches of 500"| neon[("Neon<br/>Postgres")]
     neon --> snapshot["Versioned<br/>JSON snapshot"]
     snapshot --> build["Next.js<br/>static export"]
-    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1,260 pages"]
+    build -->|"wrangler"| pages["Cloudflare Pages<br/>~1,290 pages"]
 ```
 
-1. **Collection:** a scheduled workflow downloads each state's CSV (one request per state per day). Files identical to the last processed one (same SHA-256) are skipped.
+1. **Collection:** until Nov 15, 2026, a scheduled workflow downloaded each state's CSV (one request per state per day). Files identical to the last processed one (same SHA-256) are skipped. The schedule has been disabled since Nov 18, 2026; the same workflow can still be run manually.
 2. **Comparison:** each list is compared with the previous state; changes become events and price history in Postgres.
 3. **Snapshot:** a JSON file with totals, top discounts and weekly price drops is generated and committed when it changes.
 4. **Publishing:** Next.js builds static pages from the snapshot and Cloudflare Pages serves them. The website never queries the database.
@@ -95,6 +96,7 @@ Technical decisions are recorded as ADRs (in Portuguese) in [docs/adr/](docs/adr
 - [0003](docs/adr/0003-corte-da-carga-inicial.md): the first collection of each state does not count as "new".
 - [0004](docs/adr/0004-persistencia-em-lotes.md): batched writes, with the collection marked as done only at the end.
 - [0008](docs/adr/0008-modo-vitrine-sem-backend.md): no accounts, billing or code at the edge.
+- [0009](docs/adr/0009-congelamento-da-coleta.md): collection frozen after the source started blocking it, without working around the block.
 
 ## Real problems solved
 
@@ -117,15 +119,18 @@ A reproducible analysis lives in [docs/resultados.md](docs/resultados.md), gener
 
 ## Metrics
 
-| Metric                | Value                                  |
-| --------------------- | -------------------------------------- |
-| Monitored properties  | ~22,000 in 27 states                   |
-| Full daily collection | ~5 min                                 |
-| Build and deploy      | ~2 min                                 |
-| Static pages          | 1,262 HTML (Pages limit: 20,000 files) |
-| Tests                 | 58, in 14 files                        |
-| Code                  | ~5,300 lines of TypeScript             |
-| Monthly cost          | BRL 0                                  |
+Measured on Nov 19, 2026, on the current code and the Nov 15, 2026 snapshot.
+
+| Metric                               | Value                                            |
+| ------------------------------------ | ------------------------------------------------ |
+| Properties in the last snapshot      | 23,769 in 27 states and 1,260 cities             |
+| Monitoring period                    | October to Nov 15, 2026                          |
+| Full daily collection (while active) | 6 to 8 min per run                               |
+| Build and deploy                     | ~2 min                                           |
+| Static pages                         | 1,293 HTML, 6,489 files (Pages limit: 20,000)    |
+| Tests                                | 74, in 16 files                                  |
+| Code                                 | 7,540 lines of TypeScript, 6,007 excluding tests |
+| Monthly cost                         | BRL 0                                            |
 
 ## Running locally
 
@@ -152,15 +157,15 @@ npm run analise                          # regenerate docs/resultados.md
 - **Data frozen on Nov 15, 2026.** Since Nov 16, 2026, Caixa blocks automated collection from cloud servers (HTTP 403). By project decision the block will not be worked around, and the daily collection is disabled.
 - Data depends on Caixa's list, which can lag days behind the official page. **Always check the source.**
 - The price shown is the minimum sale price; in online auctions ("Venda Online") the final price may be higher.
-- Collection does not retry automatically on temporary errors; the file is reprocessed the next day.
-- History starts in October 2026, when monitoring began.
+- History covers only the monitoring period, October to Nov 15, 2026.
 - 12 of 1,187 cities have no match in IBGE data (Federal District administrative regions, districts and spelling differences) and are shown without accents.
 
 ## Next steps
 
-- Retry the CSV download on 5xx errors and timeouts, with exponential backoff and a circuit breaker so the workflow stays within its time limit.
+With collection frozen ([post-mortem](docs/incidentes/2026-11-bloqueio-403.md), in Portuguese), the focus moves to the data already collected:
+
 - Integration tests against a Postgres instance in CI, covering collection, diff and persistence end to end.
-- A public channel for the day's price drops (for example, an RSS feed generated at build time).
+- Publishing the dataset for the monitoring period (properties, price history and events), with a data dictionary and source attribution.
 
 ## License and data
 

@@ -1,4 +1,4 @@
-# ADR 0004 — Persistência em lotes, com `sucesso` registrado por último
+# ADR 0004: Persistência em lotes, com `sucesso` registrado por último
 
 **Status:** aceita
 

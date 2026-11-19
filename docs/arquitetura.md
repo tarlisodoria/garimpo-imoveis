@@ -1,13 +1,13 @@
 # Arquitetura
 
-O Garimpo Imóveis é um pipeline de dados diário que termina num site estático. Não há servidor de aplicação: o banco só é acessado pela coleta, e o site lê um arquivo JSON gerado no build.
+O Garimpo Imóveis é um pipeline de dados que rodou todos os dias, de outubro a 15/11/2026, e termina num site estático. Desde 16/11/2026 a coleta está congelada, porque a Caixa passou a bloquear downloads vindos de servidores em nuvem ([ADR 0009](adr/0009-congelamento-da-coleta.md), [pós-mortem](incidentes/2026-11-bloqueio-403.md)); o site segue publicado com o snapshot de 15/11/2026. Não há servidor de aplicação: o banco só é acessado pela coleta, e o site lê um arquivo JSON gerado no build.
 
 ## Visão geral
 
 ```mermaid
 flowchart LR
     caixa["Lista oficial da Caixa<br/>CSV por UF (27)"]
-    subgraph actions["GitHub Actions (03:15, Brasília)"]
+    subgraph actions["GitHub Actions (só disparo manual desde 18/11/2026)"]
         coleta["Coleta<br/>download + hash"]
         parser["Parser<br/>Windows-1252"]
         diff["Diff com o estado anterior<br/>eventos novo / queda / saiu"]
@@ -16,7 +16,7 @@ flowchart LR
     neon[("Neon Postgres<br/>imoveis · imoveis_historico<br/>eventos · coletas")]
     repo["Repositório<br/>commit automático do snapshot"]
     build["next build<br/>export estático"]
-    pages["Cloudflare Pages<br/>~1.250 páginas"]
+    pages["Cloudflare Pages<br/>~1.290 páginas"]
 
     caixa --> coleta --> parser --> diff
     diff -->|lotes de 500| neon
@@ -27,9 +27,10 @@ flowchart LR
 
 ### 1. Coleta (`scripts/coleta/run-coleta.ts`)
 
-- Um workflow agendado (`coleta-diaria.yml`) aplica as migrations, roda os testes e coleta as 27 UFs em sequência: uma requisição por UF por dia.
+- O workflow `coleta-diaria.yml` aplica as migrations, roda os testes e coleta as 27 UFs em sequência: uma requisição por UF. Até 15/11/2026 ele rodava uma vez por dia; desde 18/11/2026 não tem agendamento e só roda por disparo manual, para teste.
 - O arquivo é baixado e identificado por SHA-256. Se o hash for igual ao da última coleta **bem-sucedida** da UF, a coleta é registrada como `sem_alteracao` e nada mais é feito.
 - Qualquer erro (HTTP 5xx da Caixa, falha de banco) fica registrado como `falha` em `coletas`; o arquivo é reprocessado na coleta seguinte. Uma falha no job abre uma issue automaticamente.
+- Desde 16/11/2026 a Caixa responde HTTP 403 para todas as UFs quando o download parte do GitHub Actions. Esse bloqueio não é contornado.
 
 ### 2. Parser (`scripts/coleta/caixa-csv.ts`)
 
@@ -52,7 +53,7 @@ flowchart LR
 ### 5. Site (`app/`, `components/`, `lib/`)
 
 - Next.js com `output: "export"`: home, páginas por UF e por cidade (`generateStaticParams`), status, termos e privacidade.
-- SEO técnico: canonical e metadados Open Graph/Twitter específicos por UF/cidade, JSON-LD `WebSite` e `BreadcrumbList`; o sitemap usa a data de geração do snapshot nas páginas cujos dados mudam diariamente, sem marcar páginas legais/status como atualizadas.
+- SEO técnico: canonical e metadados Open Graph/Twitter específicos por UF/cidade, JSON-LD `WebSite` e `BreadcrumbList`; o sitemap usa a data de geração do snapshot nas páginas cujos dados vêm dele, sem marcar páginas legais/status como atualizadas.
 - A busca exploratória recebe um recorte leve dos imóveis em destaque e os totais por UF/cidade, não o catálogo completo. O mapa SVG usa a malha estadual do IBGE; região e estado são selecionáveis e cada UF abre suas cidades.
 - Em telas grandes, mapa e filtros ficam numa barra lateral sticky com rolagem própria; os resultados permanecem no fluxo principal. Em telas pequenas, um botão persistente abre o painel como diálogo modal, com foco controlado, fechamento por Escape e bloqueio da rolagem de fundo.
 - Os filtros de tipo e de preço trabalham em conjunto sobre os imóveis em destaque. Os pontos coloridos indicam a presença de um tipo na UF, não coordenadas dos anúncios. A régua de orçamento usa escala logarítmica, histograma e limites numéricos; filtros e mapa são atualizados no navegador.
@@ -69,10 +70,6 @@ flowchart LR
 
 O snapshot limita quantos imóveis detalhados são enviados à home; as contagens do orçamento, histograma, filtros e marcadores correspondem a esse recorte, não ao total de anúncios ativos. Os totais exibidos no mapa por estado e cidade vêm do snapshot completo agregado. Como a lista pública não informa latitude/longitude confiáveis por imóvel, os marcadores representam apenas a UF.
 
-#### Verificação local da busca, filtros e cards
-
-Antes desta publicação, executei em máquina local `npm run lint`, `npm run format:check`, `npm test` (61 testes), `npm run build` (1.262 páginas HTML) e `git diff --check`, todos sem falhas. Também conferi no navegador os filtros por localização e características, a apresentação do prazo oficial nos cards e a ausência de anúncios repetidos entre os destaques da home e as quedas recentes. As capturas atualizadas do README foram registradas a partir do site local.
-
 ## Segurança
 
 - O site não tem Functions nem cadastro: nenhuma credencial fica na borda, e o banco não é acessível pela internet a partir do site.
@@ -81,4 +78,4 @@ Antes desta publicação, executei em máquina local `npm run lint`, `npm run fo
 
 ## Custos
 
-Todos os serviços estão em planos gratuitos: GitHub Actions, Neon (Postgres serverless) e Cloudflare Pages (até 20.000 arquivos por deploy; o site usa cerca de 6.100).
+Todos os serviços estão em planos gratuitos: GitHub Actions, Neon (Postgres serverless) e Cloudflare Pages (até 20.000 arquivos por deploy; o site usa cerca de 6.500).

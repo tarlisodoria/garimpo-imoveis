@@ -1,4 +1,4 @@
-# ADR 0006 — Deploy por Direct Upload no Cloudflare Pages
+# ADR 0006: Deploy por Direct Upload no Cloudflare Pages
 
 **Status:** aceita
 
