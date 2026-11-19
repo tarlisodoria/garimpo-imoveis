@@ -15,25 +15,27 @@ import {
   FILTROS_CARACTERISTICAS_VAZIOS,
   type FiltrosCaracteristicas,
 } from "../../lib/filtro-caracteristicas";
+import {
+  CATEGORIAS_IMOVEL,
+  categoriaDoTipo,
+  contarPorCategoria,
+  contarPorUfECategoria,
+  dentroDaFaixa,
+  noRecorte,
+  REGIOES,
+  regiaoDaUf,
+  regiaoPorNome,
+  totalDaRegiao,
+} from "../../lib/classificacao-imoveis";
+import {
+  caminhosDosEstados,
+  MAPA_ALTURA,
+  MAPA_LARGURA,
+  posicaoDoMarcador,
+  raioDoMarcador,
+  type FeatureEstado,
+} from "../../lib/mapa-brasil";
 
-type Position = [number, number];
-type PolygonGeometry = {
-  type: "Polygon";
-  coordinates: Position[][];
-};
-type MultiPolygonGeometry = {
-  type: "MultiPolygon";
-  coordinates: Position[][][];
-};
-type EstadoFeature = {
-  type: "Feature";
-  properties: { sigla: string };
-  geometry: PolygonGeometry | MultiPolygonGeometry;
-};
-type CategoriaImovel =
-  "casa" | "apartamento" | "terreno" | "comercial" | "galpao" | "outros";
-
-// Malha estadual do IBGE distribuída pelo br-geojson sob CC0 1.0.
 export type CidadeExploravel = {
   nomeExibicao: string;
   slug: string;
@@ -51,151 +53,8 @@ type ExplorarImoveisProps = {
   ufs: EstadoExploravel[];
 };
 
-const REGIOES = [
-  {
-    nome: "Norte",
-    ufs: ["AC", "AP", "AM", "PA", "RO", "RR", "TO"],
-  },
-  {
-    nome: "Nordeste",
-    ufs: ["AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE"],
-  },
-  {
-    nome: "Centro-Oeste",
-    ufs: ["DF", "GO", "MS", "MT"],
-  },
-  {
-    nome: "Sudeste",
-    ufs: ["ES", "MG", "RJ", "SP"],
-  },
-  {
-    nome: "Sul",
-    ufs: ["PR", "RS", "SC"],
-  },
-] as const;
-
-const CATEGORIAS_IMOVEL: {
-  id: CategoriaImovel;
-  nome: string;
-  cor: string;
-}[] = [
-  { id: "casa", nome: "Casas", cor: "#35e0c1" },
-  { id: "apartamento", nome: "Apartamentos", cor: "#b28cff" },
-  { id: "terreno", nome: "Terrenos", cor: "#ffbd55" },
-  { id: "comercial", nome: "Comerciais", cor: "#58a9ff" },
-  { id: "galpao", nome: "Galpões", cor: "#ff7182" },
-  { id: "outros", nome: "Outros", cor: "#ec68b4" },
-];
-
-const FEATURES = mapData.features as EstadoFeature[];
-const MAP_WIDTH = 620;
-const MAP_HEIGHT = 500;
-const MAP_PADDING = 18;
+const ESTADO_PATHS = caminhosDosEstados(mapData.features as FeatureEstado[]);
 const LIMITE_RESULTADOS = 12;
-
-function mercator(latitude: number) {
-  const radians = (latitude * Math.PI) / 180;
-  return Math.log(Math.tan(Math.PI / 4 + radians / 2));
-}
-
-function projectMap() {
-  const positions = FEATURES.flatMap((feature) => {
-    const polygons =
-      feature.geometry.type === "Polygon"
-        ? [feature.geometry.coordinates]
-        : feature.geometry.coordinates;
-
-    return polygons.flatMap((polygon) => polygon.flatMap((ring) => ring));
-  });
-  const longitudes = positions.map(
-    ([longitude]) => (longitude * Math.PI) / 180,
-  );
-  const latitudes = positions.map(([, latitude]) => mercator(latitude));
-  const minLongitude = Math.min(...longitudes);
-  const maxLongitude = Math.max(...longitudes);
-  const minLatitude = Math.min(...latitudes);
-  const maxLatitude = Math.max(...latitudes);
-  const scale = Math.min(
-    (MAP_WIDTH - MAP_PADDING * 2) / (maxLongitude - minLongitude),
-    (MAP_HEIGHT - MAP_PADDING * 2) / (maxLatitude - minLatitude),
-  );
-  const drawnWidth = (maxLongitude - minLongitude) * scale;
-  const drawnHeight = (maxLatitude - minLatitude) * scale;
-  const offsetX = (MAP_WIDTH - drawnWidth) / 2;
-  const offsetY = (MAP_HEIGHT - drawnHeight) / 2;
-
-  return (position: Position): [number, number] => {
-    const [longitude, latitude] = position;
-    const longitudeRadians = (longitude * Math.PI) / 180;
-    const x = offsetX + (longitudeRadians - minLongitude) * scale;
-    const y = offsetY + (maxLatitude - mercator(latitude)) * scale;
-    return [x, y];
-  };
-}
-
-const project = projectMap();
-
-function centroDaGeometria(geometry: PolygonGeometry | MultiPolygonGeometry) {
-  const polygons =
-    geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
-  const positions = polygons.flatMap((polygon) =>
-    polygon.flatMap((ring) => ring),
-  );
-  const projected = positions.map(project);
-  const center = projected.reduce(
-    (total, [x, y]) => [total[0] + x, total[1] + y],
-    [0, 0],
-  );
-
-  return [center[0] / projected.length, center[1] / projected.length] as const;
-}
-
-function pathForGeometry(geometry: PolygonGeometry | MultiPolygonGeometry) {
-  const polygons =
-    geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
-
-  return polygons
-    .map((polygon) =>
-      polygon
-        .map((ring) => {
-          const [first, ...remaining] = ring;
-          if (!first) return "";
-          const [firstX, firstY] = project(first);
-          return `M${firstX.toFixed(2)},${firstY.toFixed(2)}${remaining
-            .map((point) => {
-              const [x, y] = project(point);
-              return `L${x.toFixed(2)},${y.toFixed(2)}`;
-            })
-            .join("")}Z`;
-        })
-        .join(""),
-    )
-    .join("");
-}
-
-const ESTADO_PATHS = FEATURES.map((feature) => ({
-  uf: feature.properties.sigla,
-  d: pathForGeometry(feature.geometry),
-  center: centroDaGeometria(feature.geometry),
-}));
-
-function regiaoDaUf(uf: string) {
-  return REGIOES.find((regiao) => regiao.ufs.some((sigla) => sigla === uf));
-}
-
-function categoriaDoTipo(tipo: string | null): CategoriaImovel {
-  const nome = (tipo ?? "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("pt-BR");
-
-  if (/casa|sobrado/.test(nome)) return "casa";
-  if (/apartamento/.test(nome)) return "apartamento";
-  if (/terreno/.test(nome)) return "terreno";
-  if (/galpao/.test(nome)) return "galpao";
-  if (/comercial|predio|loja|sala/.test(nome)) return "comercial";
-  return "outros";
-}
 
 export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
   const [filtrosAbertos, setFiltrosAbertos] = useState(false);
@@ -267,34 +126,14 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
     () => filtrarPorCaracteristicas(imoveis, filtrosCaracteristicas),
     [filtrosCaracteristicas, imoveis],
   );
-  const totaisPorCategoria = useMemo(() => {
-    const totais = new Map<CategoriaImovel, number>();
-    for (const imovel of imoveisComCaracteristicas) {
-      const categoria = categoriaDoTipo(imovel.tipo);
-      totais.set(categoria, (totais.get(categoria) ?? 0) + 1);
-    }
-    return totais;
-  }, [imoveisComCaracteristicas]);
-
-  const totaisPorUfECategoria = useMemo(() => {
-    const totais = new Map<string, Map<CategoriaImovel, number>>();
-    for (const imovel of imoveisComCaracteristicas) {
-      const preco = Number(imovel.preco);
-      if (
-        faixaPreco &&
-        (!Number.isFinite(preco) ||
-          preco < faixaPreco.minimo ||
-          preco > faixaPreco.maximo)
-      ) {
-        continue;
-      }
-      const categorias = totais.get(imovel.uf) ?? new Map();
-      const categoria = categoriaDoTipo(imovel.tipo);
-      categorias.set(categoria, (categorias.get(categoria) ?? 0) + 1);
-      totais.set(imovel.uf, categorias);
-    }
-    return totais;
-  }, [faixaPreco, imoveisComCaracteristicas]);
+  const totaisPorCategoria = useMemo(
+    () => contarPorCategoria(imoveisComCaracteristicas),
+    [imoveisComCaracteristicas],
+  );
+  const totaisPorUfECategoria = useMemo(
+    () => contarPorUfECategoria(imoveisComCaracteristicas, faixaPreco),
+    [faixaPreco, imoveisComCaracteristicas],
+  );
 
   const categoriasVisiveis = CATEGORIAS_IMOVEL.filter(
     (categoria) => (totaisPorCategoria.get(categoria.id) ?? 0) > 0,
@@ -303,28 +142,15 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
     (imovel) => categoriasSelecionadas.has(categoriaDoTipo(imovel.tipo)),
   );
   const estadoSelecionado = ufs.find((estado) => estado.uf === ufSelecionada);
-  const regiaoAtual = REGIOES.find(
-    (regiao) => regiao.nome === regiaoSelecionada,
-  );
+  const regiaoAtual = regiaoPorNome(regiaoSelecionada);
   const ufsDaRegiao: readonly string[] | null = regiaoAtual?.ufs ?? null;
   const imoveisDoRecorte = imoveisFiltradosPorCategoria.filter((imovel) =>
-    ufSelecionada
-      ? imovel.uf === ufSelecionada
-      : !ufsDaRegiao || ufsDaRegiao.includes(imovel.uf),
+    noRecorte(imovel.uf, ufSelecionada, ufsDaRegiao),
   );
-  const imoveisComPreco = imoveisFiltradosPorCategoria.filter((imovel) => {
-    if (!faixaPreco) return true;
-    const preco = Number(imovel.preco);
-    return (
-      Number.isFinite(preco) &&
-      preco >= faixaPreco.minimo &&
-      preco <= faixaPreco.maximo
-    );
-  });
-  const imoveisResultados = imoveisComPreco.filter((imovel) =>
-    ufSelecionada
-      ? imovel.uf === ufSelecionada
-      : !ufsDaRegiao || ufsDaRegiao.includes(imovel.uf),
+  const imoveisResultados = imoveisFiltradosPorCategoria.filter(
+    (imovel) =>
+      dentroDaFaixa(imovel.preco, faixaPreco) &&
+      noRecorte(imovel.uf, ufSelecionada, ufsDaRegiao),
   );
   const cidades = useMemo(() => {
     if (!estadoSelecionado) return [];
@@ -464,7 +290,7 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
               </div>
 
               <svg
-                viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+                viewBox={`0 0 ${MAPA_LARGURA} ${MAPA_ALTURA}`}
                 role="group"
                 aria-label="Mapa interativo dos estados brasileiros"
                 className="mx-auto block h-auto w-full max-w-[620px]"
@@ -526,13 +352,11 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
                         vectorEffect="non-scaling-stroke"
                       />
                       {marcadores.map((categoria, index) => {
-                        const angulo =
-                          (index / Math.max(marcadores.length, 1)) *
-                            Math.PI *
-                            2 -
-                          Math.PI / 2;
-                        const x = center[0] + Math.cos(angulo) * 8;
-                        const y = center[1] + Math.sin(angulo) * 8;
+                        const [x, y] = posicaoDoMarcador(
+                          center,
+                          index,
+                          marcadores.length,
+                        );
 
                         return (
                           <g
@@ -542,14 +366,9 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
                             style={{ pointerEvents: "none" }}
                           >
                             <circle
-                              cx={Number(x.toFixed(2))}
-                              cy={Number(y.toFixed(2))}
-                              r={Number(
-                                Math.min(
-                                  7,
-                                  4 + Math.log2(categoria.quantidade + 1) * 0.3,
-                                ).toFixed(2),
-                              )}
+                              cx={x}
+                              cy={y}
+                              r={raioDoMarcador(categoria.quantidade)}
                               fill={categoria.cor}
                               stroke="#07151b"
                               strokeWidth="2"
@@ -681,14 +500,7 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
 
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   {REGIOES.map((regiao) => {
-                    const quantidade = ufs
-                      .filter((estado) =>
-                        regiao.ufs.some((sigla) => sigla === estado.uf),
-                      )
-                      .reduce(
-                        (total, estado) => total + estado.totalImoveis,
-                        0,
-                      );
+                    const quantidade = totalDaRegiao(regiao, ufs);
                     const ativa = regiaoSelecionada === regiao.nome;
 
                     return (
