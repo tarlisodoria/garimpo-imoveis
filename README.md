@@ -2,7 +2,7 @@
 
 ![Busca atualizada com mapa, tipos de imóvel e resultados em destaque](docs/img/home.png)
 
-![Card com características do imóvel](docs/img/card-imovel.png)
+<img src="docs/img/card-imovel.png" alt="Card com características do imóvel" width="283">
 
 ![Filtros de cidade, preço e características na página de imóveis de Belém](docs/img/filtros-regionais.png)
 

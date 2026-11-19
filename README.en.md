@@ -2,7 +2,7 @@
 
 ![Updated property search with a map, property types and featured results](docs/img/home.png)
 
-![Property card with listing features](docs/img/card-imovel.png)
+<img src="docs/img/card-imovel.png" alt="Property card with listing features" width="283">
 
 ![City, price and property feature filters on the Belém listings page](docs/img/filtros-regionais.png)
 

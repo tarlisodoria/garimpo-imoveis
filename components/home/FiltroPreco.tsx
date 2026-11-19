@@ -23,9 +23,9 @@ const TOTAL_BARRAS = 20;
 
 const PRESETS = [
   { nome: "Até R$ 50 mil", minimo: 0, maximo: 50_000 },
-  { nome: "R$ 50–150 mil", minimo: 50_000, maximo: 150_000 },
-  { nome: "R$ 150–300 mil", minimo: 150_000, maximo: 300_000 },
-  { nome: "R$ 300–500 mil", minimo: 300_000, maximo: 500_000 },
+  { nome: "R$ 50 a 150 mil", minimo: 50_000, maximo: 150_000 },
+  { nome: "R$ 150 a 300 mil", minimo: 150_000, maximo: 300_000 },
+  { nome: "R$ 300 a 500 mil", minimo: 300_000, maximo: 500_000 },
   { nome: "Acima de R$ 500 mil", minimo: 500_000, maximo: Infinity },
 ];
 

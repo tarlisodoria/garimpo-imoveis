@@ -675,7 +675,7 @@ export function ExplorarImoveis({ imoveis, ufs }: ExplorarImoveisProps) {
                 <span className="block truncate text-xs text-slate-500">
                   {localSelecionado} · {categoriasSelecionadas.size} tipos
                   {faixaPreco
-                    ? ` · ${toCurrencyCompacto(faixaPreco.minimo)}–${toCurrencyCompacto(faixaPreco.maximo)}`
+                    ? ` · ${toCurrencyCompacto(faixaPreco.minimo)} a ${toCurrencyCompacto(faixaPreco.maximo)}`
                     : ""}
                   {Object.values(filtrosCaracteristicas).some(
                     (valor) => valor !== null,
