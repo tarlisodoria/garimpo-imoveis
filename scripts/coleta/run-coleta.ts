@@ -2,12 +2,17 @@ import "dotenv/config";
 
 import { createHash } from "node:crypto";
 
-import { and, desc, eq, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull } from "drizzle-orm";
 
 import { db } from "../../db/client";
-import { coletas, eventos, imoveis, imoveisHistorico } from "../../db/schema";
+import { coletas } from "../../db/schema";
 import { parseCaixaCsvFile } from "./caixa-csv";
 import { diffImoveis } from "./diff-imoveis";
+import {
+  carregarEstadoAnterior,
+  criarGravacoes,
+  paraGravacao,
+} from "./gravacoes-db";
 import { executarRegistrandoFalha, persistirColeta } from "./persistencia";
 import { erroSeguro } from "../lib/erro-seguro";
 
@@ -73,16 +78,7 @@ async function coletarUf(uf: string) {
     return;
   }
 
-  const previousSnapshot = await db
-    .select({
-      idCaixa: imoveis.idCaixa,
-      preco: imoveis.preco,
-      descontoPct: imoveis.descontoPct,
-      modalidade: imoveis.modalidade,
-      ativo: imoveis.ativo,
-    })
-    .from(imoveis)
-    .where(eq(imoveis.uf, uf));
+  const previousSnapshot = await carregarEstadoAnterior(db, uf);
 
   const dataReferencia = parsed.dataGeracao
     ? convertBrazilianDateToIso(parsed.dataGeracao)
@@ -90,91 +86,20 @@ async function coletarUf(uf: string) {
   const diff = diffImoveis(parsed.rows, previousSnapshot, dataReferencia);
   const processedAt = new Date();
 
-  const imoveisPayload = diff.toUpsert.map((row) => ({
-    idCaixa: row.idCaixa,
-    uf: row.uf,
-    cidade: row.cidade,
-    cidadeSlug: row.cidadeSlug,
-    bairro: row.bairro,
-    endereco: row.endereco,
-    tipo: row.tipo,
-    descricaoCurta: row.descricaoCurta,
-    preco: row.preco,
-    valorAvaliacao: row.valorAvaliacao,
-    descontoPct: row.descontoPct,
-    modalidade: row.modalidade,
-    aceitaFinanciamento: row.aceitaFinanciamento,
-    linkOficial: row.linkOficial,
-    primeiraVezVisto: processedAt,
-    ultimaVezVisto: processedAt,
-    ativo: true,
-  }));
-
   await persistirColeta(
     {
-      imoveis: imoveisPayload,
+      imoveis: paraGravacao(diff.toUpsert, processedAt),
       desativados: diff.deactivatedIds,
       historico: diff.historyToInsert,
       eventos: diff.eventsToInsert,
     },
-    {
-      upsertImoveis: async (lote) => {
-        await db
-          .insert(imoveis)
-          .values(lote)
-          .onConflictDoUpdate({
-            target: imoveis.idCaixa,
-            set: {
-              uf: sql.raw(`excluded.${imoveis.uf.name}`),
-              cidade: sql.raw(`excluded.${imoveis.cidade.name}`),
-              cidadeSlug: sql.raw(`excluded.${imoveis.cidadeSlug.name}`),
-              bairro: sql.raw(`excluded.${imoveis.bairro.name}`),
-              endereco: sql.raw(`excluded.${imoveis.endereco.name}`),
-              tipo: sql.raw(`excluded.${imoveis.tipo.name}`),
-              descricaoCurta: sql.raw(
-                `excluded.${imoveis.descricaoCurta.name}`,
-              ),
-              preco: sql.raw(`excluded.${imoveis.preco.name}`),
-              valorAvaliacao: sql.raw(
-                `excluded.${imoveis.valorAvaliacao.name}`,
-              ),
-              descontoPct: sql.raw(`excluded.${imoveis.descontoPct.name}`),
-              modalidade: sql.raw(`excluded.${imoveis.modalidade.name}`),
-              aceitaFinanciamento: sql.raw(
-                `excluded.${imoveis.aceitaFinanciamento.name}`,
-              ),
-              linkOficial: sql.raw(`excluded.${imoveis.linkOficial.name}`),
-              ultimaVezVisto: sql.raw(
-                `excluded.${imoveis.ultimaVezVisto.name}`,
-              ),
-              ativo: sql.raw(`excluded.${imoveis.ativo.name}`),
-            },
-          });
-      },
-      desativarImoveis: async (lote) => {
-        await db
-          .update(imoveis)
-          .set({ ativo: false, ultimaVezVisto: processedAt })
-          .where(inArray(imoveis.idCaixa, lote));
-      },
-      inserirHistorico: async (lote) => {
-        await db.insert(imoveisHistorico).values(lote).onConflictDoNothing();
-      },
-      inserirEventos: async (lote) => {
-        await db.insert(eventos).values(lote);
-      },
-      // `iniciadoEm` explícito: a linha é gravada no fim, mas precisa marcar o
-      // início da coleta, antes dos seus eventos (corte da carga inicial).
-      registrarSucesso: async () => {
-        await db.insert(coletas).values({
-          uf,
-          iniciadoEm: startedAt,
-          status: "sucesso",
-          linhas: parsed.rows.length,
-          hashArquivo,
-        });
-      },
-    },
+    criarGravacoes(db, {
+      uf,
+      iniciadoEm: startedAt,
+      processadoEm: processedAt,
+      linhas: parsed.rows.length,
+      hashArquivo,
+    }),
   );
 
   console.log(

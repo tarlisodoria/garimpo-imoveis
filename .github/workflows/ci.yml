@@ -1,13 +1,12 @@
 name: CI
 
-# Testes, lint, formatação e build em pull requests e em branches que não são
-# a main (a main já passa por format:check e build no deploy). Sem secrets:
-# o build lê só o snapshot versionado.
+# Testes, lint, formatação e build em todo push e pull request, mais um teste
+# de integração com Postgres descartável. Sem secrets: o build lê só o
+# snapshot versionado e o banco do teste existe só durante o job.
 
 on:
   pull_request:
   push:
-    branches-ignore: [main]
 
 permissions:
   contents: read
@@ -44,3 +43,40 @@ jobs:
 
       - name: Build static site
         run: npm run build
+
+  integracao:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        # postgres:16-alpine fixado por digest.
+        image: postgres:16-alpine@sha256:16bc17c64a573ef34162af9298258d1aec548232985b33ed7b1eac33ba35c229
+        env:
+          POSTGRES_USER: teste
+          POSTGRES_PASSWORD: teste
+          POSTGRES_DB: garimpo_teste
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U teste -d garimpo_teste"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Credenciais do container descartável acima; não são secrets.
+      TEST_DATABASE_URL: postgres://teste:teste@localhost:5432/garimpo_teste
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Migrations, diff e persistência num Postgres real
+        run: npm run test:integracao

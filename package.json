@@ -19,7 +19,8 @@
     "public:snapshot": "tsx scripts/public/generate-public-snapshot.ts",
     "public:municipios": "tsx scripts/public/gerar-municipios-ibge.ts",
     "analise": "tsx scripts/analise/gerar-resultados.ts",
-    "collect:pa": "tsx scripts/coleta/run-coleta.ts PA"
+    "collect:pa": "tsx scripts/coleta/run-coleta.ts PA",
+    "test:integracao": "node --import tsx --test scripts/coleta/coleta.integracao.ts"
   },
   "repository": {
     "type": "git",
@@ -44,12 +45,14 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.6.1",
     "drizzle-kit": "^0.31.11",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.4.6",
+    "pg": "^8.23.1",
     "postcss": "^8.5.30",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",
