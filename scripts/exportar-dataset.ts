@@ -8,7 +8,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { campoCsv, linhaChecksum, paraCsv, type ValorCsv } from "./lib/csv";
-import { erroSeguro } from "./lib/erro-seguro";
+import { erroParaPublicacao, erroSeguro } from "./lib/erro-seguro";
 import { abrirPool } from "./lib/pg";
 
 type Tabela = {
@@ -65,10 +65,10 @@ const TABELAS: Tabela[] = [
       "erro",
     ],
     ordem: "id",
-    // Mensagens de erro antigas podem citar a conexão; a exportação mascara.
+    // Só a primeira linha, mascarada: nada de pilha, caminho do runner ou conexão.
     tratar: (linha) => ({
       ...linha,
-      erro: linha.erro === null ? null : erroSeguro(String(linha.erro)),
+      erro: linha.erro === null ? null : erroParaPublicacao(String(linha.erro)),
     }),
   },
 ];

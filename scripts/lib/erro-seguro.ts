@@ -34,3 +34,19 @@ export function erroSeguro(
   }
   return texto;
 }
+
+/**
+ * Para dados publicados: só a primeira linha não vazia da mensagem, já
+ * mascarada. Corta stack traces e caminhos de máquina que venham depois.
+ */
+export function erroParaPublicacao(
+  texto: string,
+  databaseUrl: string | undefined = process.env.DATABASE_URL,
+): string {
+  const primeira =
+    texto
+      .split(/\r?\n/)
+      .map((linha) => linha.trim())
+      .find(Boolean) ?? "";
+  return erroSeguro(primeira, databaseUrl);
+}

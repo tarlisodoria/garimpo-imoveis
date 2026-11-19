@@ -10,7 +10,7 @@ A lista não tem histórico: cada arquivo representa só o estado do dia em que 
 
 ## 2. Período e frequência
 
-O monitoramento cobre outubro de 2026 até 15/11/2026. As datas exatas da primeira e da última coleta bem-sucedida, e o número de dias com coleta, são calculados da tabela `coletas` e publicados em [resultados.md](resultados.md).
+O monitoramento cobre de 16/10/2026 a 15/11/2026. A última lista com mudanças é de 14/11/2026; na verificação de 15/11 os arquivos eram iguais aos anteriores. Esses limites e o número de dias com coleta são calculados da tabela `coletas` e publicados em [resultados.md](resultados.md).
 
 A coleta foi agendada uma vez por dia no GitHub Actions, para as 03h15 de Brasília. Como o GitHub atrasa execuções agendadas em horários de pico, as execuções reais ocorreram entre cerca de 03h30 e 13h20 de Brasília. A partir de 16/11/2026 a Caixa passou a recusar (HTTP 403) os downloads feitos a partir de servidores em nuvem, e a coleta foi encerrada ([ADR 0009](adr/0009-congelamento-da-coleta.md)).
 
@@ -53,10 +53,12 @@ Os eventos da carga inicial permanecem no conjunto de dados publicado, para que 
 2. **Valor mínimo, não valor de venda.** O campo de preço é o valor mínimo de venda. Na modalidade Venda Online há disputa, e o valor final pode ser maior. O desconto calculado sobre esse valor é, portanto, um limite superior do desconto efetivamente praticado, e as quedas de preço são quedas do valor mínimo anunciado.
 3. **Cidades sem correspondência no IBGE.** Os nomes de cidade vêm da Caixa, em caixa alta e quase sempre sem acento. Para exibição, foram associados aos nomes oficiais do IBGE; na medição de 20/10/2026, 12 de 1.187 cidades não tinham correspondência (regiões administrativas do DF, distritos e grafias diferentes). O conjunto de dados publica o nome como veio da Caixa; quem cruzar com dados do IBGE deve tratar essas diferenças.
 4. **Instante do evento.** Como os eventos são datados pelo processamento, mudanças feitas pela Caixa num mesmo dia aparecem juntas, e um dia sem coleta bem-sucedida desloca as mudanças para o dia seguinte. Falhas pontuais da fonte (por exemplo, HTTP 502 ou 504 para uma única UF) produziram esse efeito em poucos dias.
-5. **Altas de preço e reentradas não geram evento.** Elas só aparecem no histórico de preços e no campo `ativo`. Análises de altas de preço ou de imóveis que voltam à lista devem partir de `imoveis_historico` e de `imoveis`, não de `eventos`.
-6. **Seleção da fonte.** Os dados cobrem só imóveis retomados e vendidos pela Caixa. Eles não representam o mercado imobiliário em geral, e a distribuição entre UFs reflete a carteira do banco, não a oferta regional (na análise de 20/10/2026, o RJ concentrava 37% da lista).
-7. **Descontos nulos.** Em algumas UFs, como SC e DF, a maioria dos imóveis é oferecida pelo valor de avaliação, com desconto zero. Medianas por UF devem ser lidas junto com a distribuição.
-8. **Características extraídas por texto.** Quartos, banheiros, áreas e outras características vêm de padrões na descrição livre e só existem quando aparecem explicitamente. Ausência não significa zero.
+5. **Altas de preço e reentradas não geram evento.** Elas só aparecem no histórico de preços e no campo `ativo`. Análises de altas de preço ou de imóveis que voltam à lista devem partir de `imoveis_historico` e de `imoveis`, não de `eventos`. As reentradas são frequentes: no período, 12.063 imóveis saíram da lista ao menos uma vez, 5.213 deles voltaram e estavam ativos no fim, e 1.836 saíram mais de uma vez (até 4 vezes).
+6. **Saída da lista não é venda.** O evento `saiu` só registra que o imóvel deixou de constar no arquivo. Pelos números acima, uma parte relevante das saídas é temporária. Estimativas de imóveis vendidos ou de tempo até a venda precisam considerar reentradas e não devem tratar `saiu` como desfecho.
+7. **Mudança de modalidade é, em geral, o ciclo de venda.** Das 39.600 mudanças de modalidade registradas, em 18.734 imóveis, 38.198 (96,5%) são idas e vindas entre Venda Online e Venda Direta Online. O evento `mudou_modalidade` reflete sobretudo esse ciclo, não uma mudança de condição do imóvel.
+8. **Seleção da fonte.** Os dados cobrem só imóveis retomados e vendidos pela Caixa. Eles não representam o mercado imobiliário em geral, e a distribuição entre UFs reflete a carteira do banco, não a oferta regional (na análise de 20/10/2026, o RJ concentrava 37% da lista).
+9. **Descontos nulos.** Em várias UFs, a maioria dos imóveis é oferecida pelo valor de avaliação, com desconto zero. Na última verificação eram 9 UFs (DF, ES, MG, MS, PR, RS, SC, SP e TO); em 20/10/2026, só SC e DF. Medianas por UF mudam com a composição da lista e devem ser lidas junto com a distribuição e o percentil 90.
+10. **Características extraídas por texto.** Quartos, banheiros, áreas e outras características vêm de padrões na descrição livre e só existem quando aparecem explicitamente. Ausência não significa zero.
 
 ## 7. Considerações éticas
 

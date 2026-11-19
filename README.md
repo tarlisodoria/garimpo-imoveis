@@ -52,7 +52,7 @@ npm test
 npm run build
 ```
 
-Os 84 testes de unidade passaram e o build estático do Next.js gerou 1.293 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
+Os 85 testes de unidade passaram e o build estático do Next.js gerou 1.293 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
 
 A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
 
@@ -112,11 +112,12 @@ As decisões técnicas estão registradas como ADRs em [docs/adr/](docs/adr/). A
 
 ## Resultados
 
-Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `npm run analise` ([scripts/analise/](scripts/analise/)). Com os dados de 20/10/2026:
+Análise reproduzível do período completo, de 16/10 a 15/11/2026, em [docs/resultados.md](docs/resultados.md), com gráficos gerados por `npm run analise` ([scripts/analise/](scripts/analise/)):
 
-- **21.992 imóveis ativos** em 27 UFs e 1.180 cidades, com desconto mediano de **42,1%** sobre a avaliação. O RJ concentra 37% da lista (8.200 imóveis).
-- Em SC e no DF, o desconto mediano é 0%: a maioria dos imóveis está à venda pelo valor de avaliação.
+- **30.619 imóveis distintos** passaram pela lista; **23.769 estavam ativos** na última verificação, com desconto mediano de **41,5%** sobre a avaliação. O RJ concentra 34% dos ativos (8.119 imóveis).
+- Fora da carga inicial, o pipeline registrou **8.624 imóveis novos**, **13.124 quedas de preço** e **14.171 saídas**. Sair da lista não é sinônimo de venda: 5.213 imóveis saíram e voltaram.
 - **Reprecificação de 20/10/2026:** 3.931 quedas de preço num único dia, 2.166 no RJ e 1.113 em GO, com queda mediana de cerca de 2,8% e R$ 9,7 milhões de redução somada.
+- Na última verificação, 9 UFs (DF, ES, MG, MS, PR, RS, SC, SP e TO) tinham desconto mediano de 0%: a maioria dos imóveis estava à venda pelo valor de avaliação. Em 20/10, eram só SC e DF.
 
 ## Métricas
 
@@ -129,7 +130,7 @@ Medido em 19/11/2026, sobre o código atual e o snapshot de 15/11/2026.
 | Coleta diária completa (quando ativa) | 6 a 8 min por execução                                        |
 | Build e deploy                        | ~2 min                                                        |
 | Páginas estáticas                     | 1.293 HTML, 6.489 arquivos (limite do Pages: 20.000)          |
-| Testes                                | 84 de unidade, em 18 arquivos, e 6 de integração com Postgres |
+| Testes                                | 85 de unidade, em 18 arquivos, e 6 de integração com Postgres |
 | Código                                | 8.532 linhas de TypeScript, 6.635 sem contar testes           |
 | Custo mensal                          | R$ 0                                                          |
 

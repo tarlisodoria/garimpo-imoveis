@@ -47,6 +47,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Next.js 16.4.6 corrige GHSA-mfr8-8qww-v76h e GHSA-vc7v-qv4w-wrv8.
 - `npm audit fix` atualizou typescript-eslint e minimatch. Restam 4 alertas moderados na cadeia do drizzle-kit, usado só em desenvolvimento.
 - Relato privado de vulnerabilidades ativado no repositório.
+- No conjunto de dados publicado, `coletas.erro` traz só a primeira linha de cada mensagem, mascarada, sem pilha, caminhos de máquina ou dados de conexão.
 
 ## [1.0.0] - 2026-10-20
 

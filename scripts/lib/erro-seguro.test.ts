@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
-import { erroSeguro } from "./erro-seguro";
+import { erroParaPublicacao, erroSeguro } from "./erro-seguro";
 
 const URL_FALSA =
   "postgresql://usuario_app:s3nh4-secreta@ep-exemplo-123456.sa-east-1.aws.neon.tech/neondb?sslmode=require";
@@ -35,4 +35,22 @@ test("preserva a pilha e erros sem dados do banco", () => {
 test("funciona sem DATABASE_URL e com valores que não são Error", () => {
   assert.equal(erroSeguro("falha simples", undefined), "falha simples");
   assert.equal(erroSeguro(42, "não é url"), "42");
+});
+
+test("erroParaPublicacao mantém só a primeira linha, mascarada", () => {
+  const comPilha = [
+    `Error: Falha ao baixar CSV da Caixa para SP: HTTP 403. (${URL_FALSA})`,
+    "    at coletarUf (/home/runner/work/garimpo-imoveis/scripts/coleta/run-coleta.ts:34:11)",
+    "    at async main (/home/runner/work/garimpo-imoveis/scripts/coleta/run-coleta.ts:20:3)",
+  ].join("\n");
+
+  const publicado = erroParaPublicacao(comPilha, URL_FALSA);
+
+  assert.equal(
+    publicado,
+    "Error: Falha ao baixar CSV da Caixa para SP: HTTP 403. (***)",
+  );
+  assert.ok(!publicado.includes("/home/runner"));
+  assert.equal(erroParaPublicacao("\n\n  HTTP 502  \n", URL_FALSA), "HTTP 502");
+  assert.equal(erroParaPublicacao("", URL_FALSA), "");
 });

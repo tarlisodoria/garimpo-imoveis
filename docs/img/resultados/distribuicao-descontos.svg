@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="306" viewBox="0 0 720 306" role="img" aria-labelledby="t s">
+
+<style>
+  svg { --superficie:#fcfcfb; --texto:#0b0b0b; --texto-2:#52514e; --mudo:#898781; --grade:#e1e0d9; --base:#c3c2b7; --serie:#2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --superficie:#1a1a19; --texto:#f0efec; --texto-2:#c3c2b7; --mudo:#898781; --grade:#2c2c2a; --base:#383835; --serie:#3987e5; }
+  }
+  .fundo { fill: var(--superficie); }
+  .titulo { fill: var(--texto); font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .subtitulo { fill: var(--texto-2); font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .rotulo { fill: var(--texto-2); font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .valor { fill: var(--texto); font: 600 11px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .eixo { fill: var(--mudo); font: 400 10px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .grade { stroke: var(--grade); stroke-width: 1; }
+  .base { stroke: var(--base); stroke-width: 1; }
+  .marca { fill: var(--serie); }
+</style>
+<title id="t">Imóveis ativos por faixa de desconto</title>
+<desc id="s">Desconto sobre o valor de avaliação, na última coleta (15/11/2026)</desc>
+<rect class="fundo" width="720" height="306" rx="8"/>
+<text class="titulo" x="20" y="28">Imóveis ativos por faixa de desconto</text>
+<text class="subtitulo" x="20" y="47">Desconto sobre o valor de avaliação, na última coleta (15/11/2026)</text>
+<line class="grade" x1="60.00" y1="66" x2="60.00" y2="272"/>
+<text class="eixo" x="60.00" y="288" text-anchor="middle">0</text>
+<line class="grade" x1="256.67" y1="66" x2="256.67" y2="272"/>
+<text class="eixo" x="256.67" y="288" text-anchor="middle">5.000</text>
+<line class="grade" x1="453.33" y1="66" x2="453.33" y2="272"/>
+<text class="eixo" x="453.33" y="288" text-anchor="middle">10.000</text>
+<line class="grade" x1="650.00" y1="66" x2="650.00" y2="272"/>
+<text class="eixo" x="650.00" y="288" text-anchor="middle">15.000</text>
+<text class="rotulo" x="52" y="83" text-anchor="end">0 a 9%</text>
+<path class="marca" d="M60,72h269.33a4,4 0 0 1 4,4v6.00a4,4 0 0 1 -4,4h-269.33z"/>
+<text class="valor" x="339.33" y="83">6.949</text>
+<text class="rotulo" x="52" y="103" text-anchor="end">10 a 19%</text>
+<path class="marca" d="M60,92h0.04a0.039333333333331666,0.039333333333331666 0 0 1 0.039333333333331666,0.039333333333331666v13.92a0.039333333333331666,0.039333333333331666 0 0 1 -0.039333333333331666,0.039333333333331666h-0.04z"/>
+<text class="valor" x="66.08" y="103">2</text>
+<text class="rotulo" x="52" y="123" text-anchor="end">20 a 29%</text>
+<path class="marca" d="M60,112h0.14a0.13766666666666794,0.13766666666666794 0 0 1 0.13766666666666794,0.13766666666666794v13.72a0.13766666666666794,0.13766666666666794 0 0 1 -0.13766666666666794,0.13766666666666794h-0.14z"/>
+<text class="valor" x="66.28" y="123">7</text>
+<text class="rotulo" x="52" y="143" text-anchor="end">30 a 39%</text>
+<path class="marca" d="M60,132h107.47a4,4 0 0 1 4,4v6.00a4,4 0 0 1 -4,4h-107.47z"/>
+<text class="valor" x="177.47" y="143">2.834</text>
+<text class="rotulo" x="52" y="163" text-anchor="end">40 a 49%</text>
+<path class="marca" d="M60,152h398.66a4,4 0 0 1 4,4v6.00a4,4 0 0 1 -4,4h-398.66z"/>
+<text class="valor" x="468.66" y="163">10.237</text>
+<text class="rotulo" x="52" y="183" text-anchor="end">50 a 59%</text>
+<path class="marca" d="M60,172h93.47a4,4 0 0 1 4,4v6.00a4,4 0 0 1 -4,4h-93.47z"/>
+<text class="valor" x="163.47" y="183">2.478</text>
+<text class="rotulo" x="52" y="203" text-anchor="end">60 a 69%</text>
+<path class="marca" d="M60,192h29.47a4,4 0 0 1 4,4v6.00a4,4 0 0 1 -4,4h-29.47z"/>
+<text class="valor" x="99.47" y="203">851</text>
+<text class="rotulo" x="52" y="223" text-anchor="end">70 a 79%</text>
+<path class="marca" d="M60,212h10.04a4,4 0 0 1 4,4v6.00a4,4 0 0 1 -4,4h-10.04z"/>
+<text class="valor" x="80.04" y="223">357</text>
+<text class="rotulo" x="52" y="243" text-anchor="end">80 a 89%</text>
+<path class="marca" d="M60,232h0.81a0.8063333333333347,0.8063333333333347 0 0 1 0.8063333333333347,0.8063333333333347v12.39a0.8063333333333347,0.8063333333333347 0 0 1 -0.8063333333333347,0.8063333333333347h-0.81z"/>
+<text class="valor" x="67.61" y="243">41</text>
+<text class="rotulo" x="52" y="263" text-anchor="end">90% ou +</text>
+<path class="marca" d="M60,252h0.26a0.2556666666666665,0.2556666666666665 0 0 1 0.2556666666666665,0.2556666666666665v13.49a0.2556666666666665,0.2556666666666665 0 0 1 -0.2556666666666665,0.2556666666666665h-0.26z"/>
+<text class="valor" x="66.51" y="263">13</text>
+<line class="base" x1="60" y1="66" x2="60" y2="272"/>
+</svg>

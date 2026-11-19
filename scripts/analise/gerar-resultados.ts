@@ -58,6 +58,7 @@ async function gerar(pool: ReturnType<typeof abrirPool>) {
     await pool.query<{
       inicio: string;
       fim: string;
+      verificadoAte: string;
       dias: number;
       sucesso: number;
       semAlteracao: number;
@@ -65,6 +66,7 @@ async function gerar(pool: ReturnType<typeof abrirPool>) {
     }>(`
       select (min(iniciado_em) filter (where status = 'sucesso') at time zone 'America/Sao_Paulo')::date::text as inicio,
              (max(iniciado_em) filter (where status = 'sucesso') at time zone 'America/Sao_Paulo')::date::text as fim,
+             (max(iniciado_em) filter (where status in ('sucesso', 'sem_alteracao')) at time zone 'America/Sao_Paulo')::date::text as "verificadoAte",
              count(distinct (iniciado_em at time zone 'America/Sao_Paulo')::date) filter (where status = 'sucesso')::int as dias,
              count(*) filter (where status = 'sucesso')::int as sucesso,
              count(*) filter (where status = 'sem_alteracao')::int as "semAlteracao",
@@ -110,7 +112,8 @@ async function gerar(pool: ReturnType<typeof abrirPool>) {
   const totalTipo = (tipo: string) =>
     porDia.filter((l) => l.tipo === tipo).reduce((s, l) => s + l.n, 0);
   const primeiroDia = porDia[0]?.dia ?? periodo.inicio;
-  const ultimoDia = periodo.fim;
+  // Até a última verificação: uma lista igual à anterior também é dado.
+  const ultimoDia = periodo.verificadoAte;
 
   const porUf = (
     await pool.query<LinhaUf>(`
@@ -227,7 +230,7 @@ async function gerar(pool: ReturnType<typeof abrirPool>) {
     "",
     "## Período e cobertura",
     "",
-    `- **Período:** primeira coleta bem-sucedida em ${dataBr(periodo.inicio)} e última em ${dataBr(periodo.fim)}, com coletas bem-sucedidas em ${numero(periodo.dias)} dias.`,
+    `- **Período:** de ${dataBr(periodo.inicio)} a ${dataBr(periodo.verificadoAte)}. A última lista com mudanças é de ${dataBr(periodo.fim)}; na verificação de ${dataBr(periodo.verificadoAte)} os arquivos eram iguais aos anteriores. Houve coletas com dados novos em ${numero(periodo.dias)} dias.`,
     `- **Coletas registradas:** ${numero(periodo.sucesso)} com dados novos (\`sucesso\`), ${numero(periodo.semAlteracao)} com arquivo igual ao anterior (\`sem_alteracao\`) e ${numero(periodo.falha)} com falha.`,
     `- **Imóveis:** ${numero(total.vistos)} imóveis distintos apareceram na lista em algum momento; ${numero(total.imoveis)} estavam ativos na última coleta.`,
     `- **Eventos fora da carga inicial:** ${numero(totalTipo("novo"))} imóveis novos, ${numero(totalTipo("queda_preco"))} quedas de preço, ${numero(totalTipo("mudou_modalidade"))} mudanças de modalidade e ${numero(totalTipo("saiu"))} saídas.`,
@@ -292,7 +295,7 @@ async function gerar(pool: ReturnType<typeof abrirPool>) {
       {
         arquivo: "docs/resultados.md",
         graficos: Object.keys(graficos).length,
-        periodo: `${periodo.inicio} a ${periodo.fim}`,
+        periodo: `${periodo.inicio} a ${periodo.verificadoAte}`,
         imoveisAtivos: total.imoveis,
         ufs: porUf.length,
         quedasNoDia: totalQuedasDia,

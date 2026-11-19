@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="260" viewBox="0 0 720 260" role="img" aria-labelledby="t s">
+
+<style>
+  svg { --superficie:#fcfcfb; --texto:#0b0b0b; --texto-2:#52514e; --mudo:#898781; --grade:#e1e0d9; --base:#c3c2b7; --serie:#2a78d6; }
+  @media (prefers-color-scheme: dark) {
+    svg { --superficie:#1a1a19; --texto:#f0efec; --texto-2:#c3c2b7; --mudo:#898781; --grade:#2c2c2a; --base:#383835; --serie:#3987e5; }
+  }
+  .fundo { fill: var(--superficie); }
+  .titulo { fill: var(--texto); font: 600 15px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .subtitulo { fill: var(--texto-2); font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .rotulo { fill: var(--texto-2); font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .valor { fill: var(--texto); font: 600 11px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .eixo { fill: var(--mudo); font: 400 10px system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .grade { stroke: var(--grade); stroke-width: 1; }
+  .base { stroke: var(--base); stroke-width: 1; }
+  .marca { fill: var(--serie); }
+</style>
+<title id="t">Imóveis que saíram da lista, por dia</title>
+<desc id="s">17/10/2026 a 15/11/2026, sem a carga inicial de cada UF, por dia (horário de Brasília)</desc>
+<rect class="fundo" width="720" height="260" rx="8"/>
+<text class="titulo" x="20" y="28">Imóveis que saíram da lista, por dia</text>
+<text class="subtitulo" x="20" y="47">17/10/2026 a 15/11/2026, sem a carga inicial de cada UF, por dia (horário de Brasília)</text>
+<line class="grade" x1="56" y1="220.00" x2="700" y2="220.00"/>
+<text class="eixo" x="48" y="223.00" text-anchor="end">0</text>
+<line class="grade" x1="56" y1="184.00" x2="700" y2="184.00"/>
+<text class="eixo" x="48" y="187.00" text-anchor="end">500</text>
+<line class="grade" x1="56" y1="148.00" x2="700" y2="148.00"/>
+<text class="eixo" x="48" y="151.00" text-anchor="end">1.000</text>
+<line class="grade" x1="56" y1="112.00" x2="700" y2="112.00"/>
+<text class="eixo" x="48" y="115.00" text-anchor="end">1.500</text>
+<line class="grade" x1="56" y1="76.00" x2="700" y2="76.00"/>
+<text class="eixo" x="48" y="79.00" text-anchor="end">2.000</text>
+<path class="marca" d="M57,220v-0.00a1.0080000000000098,1.0080000000000098 0 0 1 1.0080000000000098,-1.0080000000000098h17.45a1.0080000000000098,1.0080000000000098 0 0 1 1.0080000000000098,1.0080000000000098v0.00z"/>
+<text class="eixo" x="66.73" y="236" text-anchor="middle">17/10</text>
+<path class="marca" d="M121.39999999999999,220v-39.56a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v39.56z"/>
+<path class="marca" d="M142.86666666666667,220v-22.42a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v22.42z"/>
+<path class="marca" d="M164.33333333333331,220v-62.38a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v62.38z"/>
+<path class="marca" d="M185.79999999999998,220v-35.17a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v35.17z"/>
+<path class="marca" d="M207.26666666666665,220v-55.90a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v55.90z"/>
+<text class="eixo" x="217.00" y="236" text-anchor="middle">24/10</text>
+<path class="marca" d="M271.66666666666663,220v-16.74a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v16.74z"/>
+<path class="marca" d="M293.1333333333333,220v-85.28a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v85.28z"/>
+<path class="marca" d="M314.59999999999997,220v-6.44a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v6.44z"/>
+<path class="marca" d="M336.06666666666666,220v-19.47a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v19.47z"/>
+<path class="marca" d="M357.5333333333333,220v-67.64a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v67.64z"/>
+<text class="eixo" x="367.27" y="236" text-anchor="middle">31/10</text>
+<path class="marca" d="M443.4,220v-85.21a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v85.21z"/>
+<path class="marca" d="M464.8666666666666,220v-21.78a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v21.78z"/>
+<path class="marca" d="M486.3333333333333,220v-64.54a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v64.54z"/>
+<path class="marca" d="M507.79999999999995,220v-31.64a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v31.64z"/>
+<text class="eixo" x="517.53" y="236" text-anchor="middle">07/11</text>
+<path class="marca" d="M572.1999999999999,220v-117.68a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v117.68z"/>
+<text class="valor" x="581.93" y="92.32" text-anchor="middle">1.690 em 10/11</text>
+<path class="marca" d="M593.6666666666666,220v-97.88a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v97.88z"/>
+<path class="marca" d="M615.1333333333333,220v-10.33a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v10.33z"/>
+<path class="marca" d="M636.5999999999999,220v-55.76a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v55.76z"/>
+<path class="marca" d="M658.0666666666666,220v-47.48a4,4 0 0 1 4,-4h11.47a4,4 0 0 1 4,4v47.48z"/>
+<text class="eixo" x="667.80" y="236" text-anchor="middle">14/11</text>
+<line class="base" x1="56" y1="220" x2="700" y2="220"/>
+</svg>
