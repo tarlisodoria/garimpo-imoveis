@@ -5,6 +5,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      # TypeScript 7 ainda não é suportado pelo typescript-eslint (peer < 6.1).
+      # A migração de major fica fora do escopo; patches e minors seguem.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       npm:
         patterns: ["*"]

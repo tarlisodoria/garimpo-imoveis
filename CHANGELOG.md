@@ -6,6 +6,13 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 
 ## [Não lançado]
 
+### Alterado
+
+- Actions atualizadas para checkout v7, setup-node v7 e github-script v9, ainda fixadas por SHA.
+- Faixas de preço e o rótulo de acessibilidade do cabeçalho sem travessão ("R$ 50 a 150 mil", "Garimpo Imóveis, início").
+- Captura do card no README refeita com o card atual, sem o cronômetro removido na 1.1.0.
+- Dependabot ignora majors do TypeScript até o typescript-eslint suportar a versão 7.
+
 ## [1.1.0] - 2026-11-19
 
 ### Adicionado
