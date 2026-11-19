@@ -23,7 +23,7 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
     steps:
       - name: Checkout
-        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       # Logs públicos: esconde host, endpoint e usuário do banco em qualquer
       # saída posterior (o GitHub já mascara a URL completa do secret).
@@ -33,7 +33,7 @@ jobs:
           node -e 'const u = new URL(process.env.DATABASE_URL); for (const v of [u.hostname, u.hostname.split(".")[0], u.username]) if (v) console.log("::add-mask::" + v);'
 
       - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
           cache: npm
