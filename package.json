@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
-    "test": "node --import tsx --test scripts/coleta/*.test.ts scripts/lib/*.test.ts lib/*.test.ts",
+    "test": "node --import tsx --test scripts/coleta/*.test.ts scripts/lib/*.test.ts scripts/analise/*.test.ts lib/*.test.ts",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
@@ -20,7 +20,8 @@
     "public:municipios": "tsx scripts/public/gerar-municipios-ibge.ts",
     "analise": "tsx scripts/analise/gerar-resultados.ts",
     "collect:pa": "tsx scripts/coleta/run-coleta.ts PA",
-    "test:integracao": "node --import tsx --test scripts/coleta/coleta.integracao.ts"
+    "test:integracao": "node --import tsx --test scripts/coleta/coleta.integracao.ts",
+    "dataset:exportar": "tsx scripts/exportar-dataset.ts"
   },
   "repository": {
     "type": "git",

@@ -11,3 +11,6 @@ coverage/
 .tmp/
 .vscode/
 next-env.d.ts
+
+# Conjunto de dados exportado (vai para a release, não para o Git)
+/dataset/
