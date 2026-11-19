@@ -19,6 +19,11 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Pós-mortem do bloqueio HTTP 403 em `docs/incidentes/` e ADR 0009 sobre o congelamento da coleta.
 - `SECURITY.md`, `CONTRIBUTING.md`, este changelog, `.nvmrc` e configuração do Dependabot.
 - Testes para a projeção do mapa e para a classificação de regiões e categorias.
+- Conjunto de dados do período monitorado (imóveis, histórico, eventos e coletas) em CSV UTF-8 com checksums SHA-256, publicado nesta release e gerado por `npm run dataset:exportar`.
+- `docs/metodologia.md`, com fonte, procedimento, regras de comparação, limitações, vieses e considerações éticas.
+- `docs/guia-de-estudo.md`, uma trilha didática pelo código na ordem do fluxo de dados, com exercícios.
+- Teste de integração com Postgres real no CI (migrations, diff e persistência sobre a fixture), sem secrets.
+- Gráficos em SVG em `docs/resultados.md`, gerados por script sem dependência nova.
 
 ### Alterado
 
@@ -28,7 +33,10 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Node 22 em todos os workflows, actions fixadas por SHA, versão exata do wrangler e permissões mínimas nos workflows.
 - Next.js atualizado para 16.4.6.
 - `package.json` com licença MIT, autor e versão 1.1.0, alinhado ao `LICENSE`.
-- README em PT e EN com métricas medidas em 19/11/2026 e próximos passos coerentes com a coleta congelada.
+- README em PT e EN com métricas medidas em 19/11/2026, próximos passos coerentes com a coleta congelada e seções para pesquisadores e para quem quer estudar o código.
+- `docs/resultados.md` passa a cobrir todo o período monitorado, sem os eventos da carga inicial.
+- Gravações da coleta separadas em `scripts/coleta/gravacoes-db.ts`, para servirem a qualquer driver do Drizzle.
+- CI roda também em push na `main`.
 
 ### Removido
 

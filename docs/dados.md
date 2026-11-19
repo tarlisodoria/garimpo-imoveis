@@ -8,6 +8,25 @@
 - **Mapa:** geometria das UFs derivada da malha do IBGE distribuída pelo [br-geojson](https://github.com/henriquemalvar/br-geojson), sob CC0 1.0. O mapa não contém coordenadas de anúncios.
 - **Dados pessoais:** nenhum. O site não tem cadastro, e a lista da Caixa descreve imóveis, não pessoas.
 
+## Conjunto de dados publicado
+
+O conteúdo das quatro tabelas do período monitorado (outubro a 15/11/2026) está publicado na [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0), gerado por `npm run dataset:exportar` ([scripts/exportar-dataset.ts](../scripts/exportar-dataset.ts)).
+
+| Arquivo                 | Conteúdo                                                        |
+| ----------------------- | --------------------------------------------------------------- |
+| `imoveis.csv`           | um imóvel por linha, com o último estado conhecido e `ativo`    |
+| `imoveis_historico.csv` | preço, desconto e modalidade a cada mudança, pela data da lista |
+| `eventos.csv`           | eventos `novo`, `queda_preco`, `mudou_modalidade` e `saiu`      |
+| `coletas.csv`           | cada execução por UF, com status, linhas e hash do arquivo      |
+| `SHA256SUMS.txt`        | checksums SHA-256; confira com `sha256sum -c SHA256SUMS.txt`    |
+
+- **Formato:** UTF-8 sem BOM, separador vírgula, aspas duplas quando necessário (RFC 4180), cabeçalho na primeira linha e fim de linha LF. Campo vazio significa nulo.
+- **Tipos:** instantes (`primeira_vez_visto`, `ultima_vez_visto`, `criado_em`, `iniciado_em`) em ISO 8601 UTC; datas (`imoveis_historico.data`) em `AAAA-MM-DD`; valores decimais com ponto; booleanos como `true`/`false`; `eventos.detalhe` como JSON.
+- **Colunas:** as mesmas das tabelas descritas abaixo, na mesma ordem e com os mesmos nomes.
+- **Carga inicial:** os eventos da primeira coleta de cada UF estão incluídos. Para excluí-los, aplique o corte descrito na [metodologia](metodologia.md#5-tratamento-da-carga-inicial).
+- **Mensagens de erro:** `coletas.erro` foi mascarado na exportação para não expor dados de conexão.
+- **Licença:** os dados vêm da lista pública da Caixa Econômica Federal e não são relicenciados pela MIT, que cobre só o código. A reutilização deve respeitar as condições da fonte e citar a origem ("Fonte: Caixa Econômica Federal, lista de imóveis à venda; organização: Garimpo Imóveis"). Limitações e vieses estão na [metodologia](metodologia.md#6-limitações-e-vieses).
+
 ## Formato do CSV da Caixa
 
 | Linha | Conteúdo                                                                |

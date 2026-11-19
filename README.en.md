@@ -51,7 +51,7 @@ npm test
 npm run build
 ```
 
-All 74 automated tests passed and the Next.js static build generated 1,293 HTML pages. I also checked the local version in the browser: feature and location filters, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
+All 84 unit tests passed and the Next.js static build generated 1,293 HTML pages. I also checked the local version in the browser: feature and location filters, readable addresses and no repeated listings across homepage sections. The screenshots above were captured from the validated local site before committing and publishing to Cloudflare Pages.
 
 Passing tests does not replace checking each property's terms on Caixa's official page.
 
@@ -121,16 +121,27 @@ A reproducible analysis lives in [docs/resultados.md](docs/resultados.md), gener
 
 Measured on Nov 19, 2026, on the current code and the Nov 15, 2026 snapshot.
 
-| Metric                               | Value                                            |
-| ------------------------------------ | ------------------------------------------------ |
-| Properties in the last snapshot      | 23,769 in 27 states and 1,260 cities             |
-| Monitoring period                    | October to Nov 15, 2026                          |
-| Full daily collection (while active) | 6 to 8 min per run                               |
-| Build and deploy                     | ~2 min                                           |
-| Static pages                         | 1,293 HTML, 6,489 files (Pages limit: 20,000)    |
-| Tests                                | 74, in 16 files                                  |
-| Code                                 | 7,540 lines of TypeScript, 6,007 excluding tests |
-| Monthly cost                         | BRL 0                                            |
+| Metric                               | Value                                                             |
+| ------------------------------------ | ----------------------------------------------------------------- |
+| Properties in the last snapshot      | 23,769 in 27 states and 1,260 cities                              |
+| Monitoring period                    | October to Nov 15, 2026                                           |
+| Full daily collection (while active) | 6 to 8 min per run                                                |
+| Build and deploy                     | ~2 min                                                            |
+| Static pages                         | 1,293 HTML, 6,489 files (Pages limit: 20,000)                     |
+| Tests                                | 84 unit tests in 18 files, plus 6 integration tests with Postgres |
+| Code                                 | 8,532 lines of TypeScript, 6,635 excluding tests                  |
+| Monthly cost                         | BRL 0                                                             |
+
+## For researchers
+
+- **Dataset:** the four tables for the monitoring period (October to Nov 15, 2026) as UTF-8 CSV files with SHA-256 checksums, in [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0). Format and data dictionary (in Portuguese) in [docs/dados.md](docs/dados.md#conjunto-de-dados-publicado).
+- **Methodology:** source, procedure, comparison rules, handling of the initial load, limitations, biases and ethical considerations (in Portuguese) in [docs/metodologia.md](docs/metodologia.md).
+- **Results:** reproducible analysis of the full period, with charts, in [docs/resultados.md](docs/resultados.md).
+- **How to cite:** use [CITATION.cff](CITATION.cff) or GitHub's "Cite this repository" button. The data comes from Caixa Econômica Federal and is not relicensed under MIT; cite the source as well.
+
+## For studying the code
+
+The [study guide](docs/guia-de-estudo.md) (in Portuguese) walks through the project in the order data flows (CSV, parser, diff, persistence, initial load, snapshot and website), explaining each decision, with the relevant code excerpts and short exercises. Decisions are recorded in the [ADRs](docs/adr/), and [CONTRIBUTING.md](CONTRIBUTING.md) explains how to run and test.
 
 ## Running locally
 
@@ -162,10 +173,10 @@ npm run analise                          # regenerate docs/resultados.md
 
 ## Next steps
 
-With collection frozen ([post-mortem](docs/incidentes/2026-11-bloqueio-403.md), in Portuguese), the focus moves to the data already collected:
+With collection frozen ([post-mortem](docs/incidentes/2026-11-bloqueio-403.md), in Portuguese), work continues on the data already collected:
 
-- Integration tests against a Postgres instance in CI, covering collection, diff and persistence end to end.
-- Publishing the dataset for the monitoring period (properties, price history and events), with a data dictionary and source attribution.
+- Analyses on the published dataset, such as how long each property stayed on the list before leaving, by state and sale type.
+- Re-enabling collection only if Caixa allows access from cloud servers or offers an official channel for the data, recording the decision in a new ADR.
 
 ## License and data
 

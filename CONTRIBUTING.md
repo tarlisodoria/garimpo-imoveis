@@ -29,7 +29,8 @@ Os testes usam o `node:test`, sem framework extra, e ficam ao lado do código, c
 
 - `lib/`: funções puras do site (filtros, classificação, projeção do mapa, cálculos do snapshot).
 - `scripts/coleta/`: parser do CSV, diff e persistência, com fixtures anonimizadas em `__fixtures__/`.
-- `scripts/lib/`: utilitários dos scripts.
+- `scripts/lib/`: utilitários dos scripts, como o gerador de CSV.
+- `scripts/analise/`: gráficos em SVG da análise.
 
 Antes de abrir o pull request, rode os quatro checks que o CI também roda:
 
@@ -39,6 +40,15 @@ npm run format:check   # npm run format corrige
 npm test
 npm run build
 ```
+
+O CI também roda um teste de integração com um Postgres descartável, que aplica as migrations e executa o diff e a persistência sobre a fixture. Para rodar localmente, com Docker:
+
+```bash
+docker run -d --name pg-teste -e POSTGRES_PASSWORD=teste -e POSTGRES_USER=teste -e POSTGRES_DB=garimpo_teste -p 127.0.0.1:55432:5432 postgres:16-alpine
+TEST_DATABASE_URL=postgres://teste:teste@127.0.0.1:55432/garimpo_teste npm run test:integracao
+```
+
+O teste apaga e recria o banco, e por isso recusa qualquer URL que não seja local ou que não tenha "teste" no nome.
 
 Lógica nova (um parser, um cálculo, uma regra de filtro) vem com teste. Se criar testes numa pasta nova, inclua o caminho no script `test` do `package.json`. Mudanças visuais devem ser conferidas no navegador em 390px e 1280px de largura.
 

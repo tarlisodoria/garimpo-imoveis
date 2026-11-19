@@ -52,7 +52,7 @@ npm test
 npm run build
 ```
 
-Os 74 testes automatizados passaram e o build estático do Next.js gerou 1.293 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
+Os 84 testes de unidade passaram e o build estático do Next.js gerou 1.293 páginas HTML. Também conferi a versão local no navegador: filtros de características e localização, leitura dos endereços e ausência de anúncios repetidos entre os blocos da home. As capturas acima foram feitas no site local validado, antes do commit e da publicação no Cloudflare Pages.
 
 A aprovação dos testes não substitui a conferência das condições de cada imóvel na página oficial da Caixa.
 
@@ -122,16 +122,27 @@ Análise reproduzível em [docs/resultados.md](docs/resultados.md), gerada por `
 
 Medido em 19/11/2026, sobre o código atual e o snapshot de 15/11/2026.
 
-| Métrica                               | Valor                                                |
-| ------------------------------------- | ---------------------------------------------------- |
-| Imóveis no último snapshot            | 23.769, em 27 UFs e 1.260 cidades                    |
-| Período monitorado                    | outubro a 15/11/2026                                 |
-| Coleta diária completa (quando ativa) | 6 a 8 min por execução                               |
-| Build e deploy                        | ~2 min                                               |
-| Páginas estáticas                     | 1.293 HTML, 6.489 arquivos (limite do Pages: 20.000) |
-| Testes                                | 74, em 16 arquivos                                   |
-| Código                                | 7.540 linhas de TypeScript, 6.007 sem contar testes  |
-| Custo mensal                          | R$ 0                                                 |
+| Métrica                               | Valor                                                         |
+| ------------------------------------- | ------------------------------------------------------------- |
+| Imóveis no último snapshot            | 23.769, em 27 UFs e 1.260 cidades                             |
+| Período monitorado                    | outubro a 15/11/2026                                          |
+| Coleta diária completa (quando ativa) | 6 a 8 min por execução                                        |
+| Build e deploy                        | ~2 min                                                        |
+| Páginas estáticas                     | 1.293 HTML, 6.489 arquivos (limite do Pages: 20.000)          |
+| Testes                                | 84 de unidade, em 18 arquivos, e 6 de integração com Postgres |
+| Código                                | 8.532 linhas de TypeScript, 6.635 sem contar testes           |
+| Custo mensal                          | R$ 0                                                          |
+
+## Para pesquisadores
+
+- **Conjunto de dados:** as quatro tabelas do período monitorado (outubro a 15/11/2026) em CSV UTF-8, com checksums SHA-256, na [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0). Formato e dicionário em [docs/dados.md](docs/dados.md#conjunto-de-dados-publicado).
+- **Metodologia:** fonte, procedimento, regras de comparação, tratamento da carga inicial, limitações, vieses e considerações éticas em [docs/metodologia.md](docs/metodologia.md).
+- **Resultados:** análise reproduzível do período completo, com gráficos, em [docs/resultados.md](docs/resultados.md).
+- **Como citar:** use o [CITATION.cff](CITATION.cff) ou o botão "Cite this repository" do GitHub. Os dados são da Caixa Econômica Federal e não são relicenciados pela MIT; cite também a fonte.
+
+## Para estudar o código
+
+O [guia de estudo](docs/guia-de-estudo.md) percorre o projeto na ordem do fluxo de dados (CSV, parser, diff, persistência, carga inicial, snapshot e site), com o porquê de cada decisão, os trechos de código relevantes e exercícios curtos. As decisões estão registradas nos [ADRs](docs/adr/), e o [CONTRIBUTING.md](CONTRIBUTING.md) explica como rodar e testar.
 
 ## Como rodar
 
@@ -163,10 +174,10 @@ npm run analise                        # regenera docs/resultados.md
 
 ## Próximos passos
 
-Com a coleta congelada ([pós-mortem](docs/incidentes/2026-11-bloqueio-403.md)), o foco passa a ser o que já foi coletado:
+Com a coleta congelada ([pós-mortem](docs/incidentes/2026-11-bloqueio-403.md)), o trabalho segue sobre o que já foi coletado:
 
-- Testes de integração com um Postgres no CI, cobrindo coleta, diff e persistência de ponta a ponta.
-- Publicação do conjunto de dados do período monitorado (imóveis, histórico de preços e eventos), com dicionário de dados e a indicação da fonte.
+- Análises sobre o conjunto de dados publicado, como o tempo que cada imóvel ficou na lista até sair, por UF e por modalidade.
+- Reativar a coleta só se a Caixa liberar o acesso a partir de servidores em nuvem ou oferecer um canal oficial para os dados, registrando a decisão num novo ADR.
 
 ## Licença e dados
 
