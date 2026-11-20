@@ -6,7 +6,7 @@ Antes de abrir um pull request grande, abra uma issue para combinar a ideia. Par
 
 ## Como rodar
 
-Requisitos: Node.js 22+ (a versão exata está em `.nvmrc`) e npm 10+.
+Requisitos: Node.js 22.13+ (o CI usa a linha 22 indicada no `.nvmrc`) e npm 10+.
 
 ```bash
 npm ci

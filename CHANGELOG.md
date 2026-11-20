@@ -12,6 +12,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Faixas de preço e o rótulo de acessibilidade do cabeçalho sem travessão ("R$ 50 a 150 mil", "Garimpo Imóveis, início").
 - Captura do card no README refeita com o card atual, sem o cronômetro removido na 1.1.0.
 - Dependabot ignora majors do TypeScript até o typescript-eslint suportar a versão 7.
+- ESLint 10 e atualizações menores de dependências (#7). Node mínimo passa a 22.13, exigido pelo ESLint 10.
 
 ## [1.1.0] - 2026-11-19
 

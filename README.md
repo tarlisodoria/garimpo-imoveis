@@ -147,7 +147,7 @@ O [guia de estudo](docs/guia-de-estudo.md) percorre o projeto na ordem do fluxo 
 
 ## Como rodar
 
-Requisitos: Node.js 22+ e npm 10+.
+Requisitos: Node.js 22.13+ e npm 10+.
 
 ```bash
 npm install

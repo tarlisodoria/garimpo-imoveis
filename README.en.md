@@ -146,7 +146,7 @@ The [study guide](docs/guia-de-estudo.md) (in Portuguese) walks through the proj
 
 ## Running locally
 
-Requirements: Node.js 22+ and npm 10+.
+Requirements: Node.js 22.13+ and npm 10+.
 
 ```bash
 npm install
