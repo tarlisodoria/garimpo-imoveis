@@ -1,6 +1,6 @@
 # ADR 0005: Postgres no Neon com Drizzle
 
-**Status:** aceita
+**Status:** aceita; banco desligado em 19/11/2026, com os dados preservados na [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0) ([ADR 0009](0009-congelamento-da-coleta.md))
 
 ## Contexto
 

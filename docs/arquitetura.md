@@ -1,6 +1,6 @@
 # Arquitetura
 
-O Garimpo Imóveis é um pipeline de dados que rodou todos os dias, de outubro a 15/11/2026, e termina num site estático. Desde 16/11/2026 a coleta está congelada, porque a Caixa passou a bloquear downloads vindos de servidores em nuvem ([ADR 0009](adr/0009-congelamento-da-coleta.md), [pós-mortem](incidentes/2026-11-bloqueio-403.md)); o site segue publicado com o snapshot de 15/11/2026. Não há servidor de aplicação: o banco só é acessado pela coleta, e o site lê um arquivo JSON gerado no build.
+O Garimpo Imóveis é um pipeline de dados que rodou todos os dias, de outubro a 15/11/2026, e termina num site estático. Desde 16/11/2026 a coleta está congelada, porque a Caixa passou a bloquear downloads vindos de servidores em nuvem ([ADR 0009](adr/0009-congelamento-da-coleta.md), [pós-mortem](incidentes/2026-11-bloqueio-403.md)); o site segue publicado com o snapshot de 15/11/2026. Não há servidor de aplicação: o banco só é acessado pela coleta, e o site lê um arquivo JSON gerado no build. O banco Postgres foi desligado em 19/11/2026; os dados completos do período estão na [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0), descritos em [dados.md](dados.md#conjunto-de-dados-publicado).
 
 ## Visão geral
 
@@ -73,7 +73,7 @@ O snapshot limita quantos imóveis detalhados são enviados à home; as contagen
 ## Segurança
 
 - O site não tem Functions nem cadastro: nenhuma credencial fica na borda, e o banco não é acessível pela internet a partir do site.
-- Os workflows usam só três secrets: `DATABASE_URL` (coleta) e `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` (deploy). Host, endpoint e usuário do banco são mascarados nos logs, que são públicos.
+- O repositório guarda só dois secrets: `CLOUDFLARE_API_TOKEN` e `CLOUDFLARE_ACCOUNT_ID`, usados no deploy. O `DATABASE_URL` da coleta foi removido depois que o banco foi desligado (19/11/2026); enquanto existiu, host, endpoint e usuário do banco eram mascarados nos logs, que são públicos.
 - O token da Cloudflare tem escopo mínimo (`Cloudflare Pages: Edit`).
 
 ## Custos

@@ -13,6 +13,7 @@ O formato segue o [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e 
 - Captura do card no README refeita com o card atual, sem o cronômetro removido na 1.1.0.
 - Dependabot ignora majors do TypeScript até o typescript-eslint suportar a versão 7.
 - ESLint 10 e atualizações menores de dependências (#7). Node mínimo passa a 22.13, exigido pelo ESLint 10.
+- Banco Postgres desligado em 19/11/2026; os dados completos ficam na release v1.1.0. O secret `DATABASE_URL` foi removido do repositório, e os workflows de coleta e de migrations avisam no topo que só voltam a funcionar com um banco novo, populado a partir dos CSVs.
 
 ## [1.1.0] - 2026-11-19
 

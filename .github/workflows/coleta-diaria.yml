@@ -1,3 +1,9 @@
+# ATENÇÃO: este workflow depende do secret DATABASE_URL, que não existe mais.
+# O banco Postgres foi desligado em 19/11/2026 e o secret foi removido. Ele só
+# volta a funcionar com um banco novo, populado a partir dos CSVs da release
+# v1.1.0 (passo a passo em docs/metodologia.md, seção 8), e com um novo
+# secret DATABASE_URL apontando para ele.
+
 name: Coleta diaria Caixa
 
 on:

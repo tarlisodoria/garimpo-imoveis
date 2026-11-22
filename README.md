@@ -15,7 +15,7 @@
 
 Pipeline de dados que coletou todos os dias, de outubro a novembro de 2026, a lista oficial de imóveis à venda da Caixa nas 27 UFs, detectou imóveis novos e quedas de preço e publica um site estático com os maiores descontos por estado e cidade.
 
-> **Dados congelados em 15/11/2026.** A partir de 16/11 a Caixa passou a bloquear downloads feitos por servidores em nuvem, e decidi não contornar o bloqueio. O site continua no ar com a última lista coletada. Detalhes no [pós-mortem](docs/incidentes/2026-11-bloqueio-403.md) e no [ADR 0009](docs/adr/0009-congelamento-da-coleta.md).
+> **Dados congelados em 15/11/2026.** A partir de 16/11 a Caixa passou a bloquear downloads feitos por servidores em nuvem, e decidi não contornar o bloqueio. O site continua no ar com a última lista coletada. Detalhes no [pós-mortem](docs/incidentes/2026-11-bloqueio-403.md) e no [ADR 0009](docs/adr/0009-congelamento-da-coleta.md). O banco Postgres foi desligado em 19/11/2026; os dados completos do período estão na [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0).
 
 **Site:** [garimpo-imoveis.pages.dev](https://garimpo-imoveis.pages.dev) · projeto de portfólio, sem fins comerciais e sem afiliação com a Caixa.
 
@@ -156,7 +156,7 @@ npm test           # testes
 npm run build      # site estático em out/
 ```
 
-O site funciona sem banco, a partir de `data/public-snapshot.json`. Para coletar e gerar o snapshot, crie um banco Postgres (por exemplo, no Neon) e um `.env` com `DATABASE_URL` (veja `.env.example`):
+O site funciona sem banco, a partir de `data/public-snapshot.json`. O banco original foi desligado em 19/11/2026; para rodar a coleta, a análise ou a exportação, crie um banco Postgres novo (por exemplo, no Neon), popule com os CSVs da [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0) (passo a passo em [docs/metodologia.md](docs/metodologia.md#8-como-reproduzir)) e um `.env` com `DATABASE_URL` (veja `.env.example`):
 
 ```bash
 npm run db:migrate                     # cria as tabelas
@@ -167,7 +167,7 @@ npm run analise                        # regenera docs/resultados.md
 
 ## Limitações
 
-- **Dados congelados em 15/11/2026.** Desde 16/11/2026, a Caixa bloqueia a coleta automatizada a partir de servidores em nuvem (HTTP 403). Por decisão do projeto, o bloqueio não será contornado, e a coleta diária está desativada.
+- **Dados congelados em 15/11/2026.** Desde 16/11/2026, a Caixa bloqueia a coleta automatizada a partir de servidores em nuvem (HTTP 403). Por decisão do projeto, o bloqueio não será contornado, e a coleta diária está desativada. O banco foi desligado em 19/11/2026, e os dados completos estão na [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0).
 - Os dados dependem da lista da Caixa, que pode atrasar dias em relação à página oficial. **Confirme sempre na fonte.**
 - O valor exibido é o valor mínimo de venda; na Venda Online há disputa e o valor final pode ser maior.
 - O histórico cobre só o período monitorado, de outubro a 15/11/2026.

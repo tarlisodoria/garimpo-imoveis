@@ -15,7 +15,7 @@
 
 A data pipeline that collected, every day from October to November 2026, the official list of properties for sale by Caixa Econômica Federal (a Brazilian state-owned bank) across all 27 Brazilian states, detected new listings and price drops, and publishes a static website with the largest discounts by state and city.
 
-> **Data frozen on Nov 15, 2026.** Starting Nov 16, Caixa began blocking downloads made from cloud servers, and I decided not to work around the block. The website stays online with the last list collected. Details in the [post-mortem](docs/incidentes/2026-11-bloqueio-403.md) and in [ADR 0009](docs/adr/0009-congelamento-da-coleta.md) (both in Portuguese).
+> **Data frozen on Nov 15, 2026.** Starting Nov 16, Caixa began blocking downloads made from cloud servers, and I decided not to work around the block. The website stays online with the last list collected. Details in the [post-mortem](docs/incidentes/2026-11-bloqueio-403.md) and in [ADR 0009](docs/adr/0009-congelamento-da-coleta.md) (both in Portuguese). The Postgres database was shut down on Nov 19, 2026; the full data for the period is in [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0).
 
 **Website:** [garimpo-imoveis.pages.dev](https://garimpo-imoveis.pages.dev) (in Portuguese) · portfolio project, non-commercial and not affiliated with Caixa.
 
@@ -155,7 +155,7 @@ npm test           # tests
 npm run build      # static website in out/
 ```
 
-The website works without a database, from `data/public-snapshot.json`. To collect data and build the snapshot, create a Postgres database (for example on Neon) and a `.env` file with `DATABASE_URL` (see `.env.example`):
+The website works without a database, from `data/public-snapshot.json`. The original database was shut down on Nov 19, 2026; to run collection, analysis or export, create a new Postgres database (for example on Neon), load it with the CSV files from [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0) (steps, in Portuguese, in [docs/metodologia.md](docs/metodologia.md#8-como-reproduzir)) and a `.env` file with `DATABASE_URL` (see `.env.example`):
 
 ```bash
 npm run db:migrate                       # create the tables
@@ -166,7 +166,7 @@ npm run analise                          # regenerate docs/resultados.md
 
 ## Limitations
 
-- **Data frozen on Nov 15, 2026.** Since Nov 16, 2026, Caixa blocks automated collection from cloud servers (HTTP 403). By project decision the block will not be worked around, and the daily collection is disabled.
+- **Data frozen on Nov 15, 2026.** Since Nov 16, 2026, Caixa blocks automated collection from cloud servers (HTTP 403). By project decision the block will not be worked around, and the daily collection is disabled. The database was shut down on Nov 19, 2026, and the full data is in [release v1.1.0](https://github.com/tarlisodoria/garimpo-imoveis/releases/tag/v1.1.0).
 - Data depends on Caixa's list, which can lag days behind the official page. **Always check the source.**
 - The price shown is the minimum sale price; in online auctions ("Venda Online") the final price may be higher.
 - History covers only the monitoring period, October to Nov 15, 2026.
